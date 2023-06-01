@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.1...v1.0.2) (2023-06-01)
+
+
+### Bug Fixes
+
+* 修复automerge ([1cafc56](https://github.com/Lycofuture/Yunzai-Bot/commit/1cafc5642cae489d94505d9e81e1f12250e46c2e))
+
 ## [1.0.1](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.0...v1.0.1) (2023-06-01)
 
 
