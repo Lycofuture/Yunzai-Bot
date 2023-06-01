@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.0...v1.0.1) (2023-06-01)
+
+
+### Bug Fixes
+
+* 构建版本 ([e5adc7f](https://github.com/Lycofuture/Yunzai-Bot/commit/e5adc7fcfc7c195a7beda7b5bd5c22f790ce50e5))
+
 ## 1.0.0 (2023-06-01)
 
 
