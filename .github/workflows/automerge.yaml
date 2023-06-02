@@ -52,6 +52,7 @@ jobs:
         env:
            GITHUB_TOKEN: "${{ secrets.TOKEN }}"
            MERGE_LABELS: ''
+           commit-message: '%t [skip ci]'
            MERGE_COMMIT_MESSAGE_REGEX: (.*)^---
            PULL_REQUEST_TITLE: ${{ steps.commit_message.outputs.message }}
 
