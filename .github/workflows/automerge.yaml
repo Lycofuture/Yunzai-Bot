@@ -44,14 +44,14 @@ jobs:
 
     steps:
 
-      - id: automerge
-
-        name: automerge
-
+      - name: Get commit message
+        id: commit_message
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 ${{ github.event.pull_request.head.sha }})"
+      - name: Automerge
         uses: "pascalgn/automerge-action@v0.15.6"
-
         env:
+           GITHUB_TOKEN: "${{ secrets.TOKEN }}"
+           MERGE_LABELS: ''
+           MERGE_COMMIT_MESSAGE_REGEX: (.*)^---
+           PULL_REQUEST_TITLE: ${{ steps.commit_message.outputs.message }}
 
-          GITHUB_TOKEN: "${{ secrets.TOKEN }}"
-          MERGE_LABELS: ''
-          MERGE_COMMIT_MESSAGE_REGEX: (.*)^---
