@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.3...v1.0.4) (2023-06-02)
+
+
+### Bug Fixes
+
+* 添加Android_8.8.88登录端口 ([b031434](https://github.com/Lycofuture/Yunzai-Bot/commit/b031434f2faa636df3955493f946b689a47583b1))
+
 ## [1.0.3](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.2...v1.0.3) (2023-06-02)
 
 
