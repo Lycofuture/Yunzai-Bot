@@ -50,7 +50,7 @@ export class gacha extends plugin {
   /** 检查限制 */
   checkLimit () {
     /** 主人不限制 */
-    if (this.e.isMaster) return false
+    // if (this.e.isMaster) return false
 
     let { user } = this.GachaData
     let { num, weaponNum } = user.today
