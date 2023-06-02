@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.1.0...v1.2.0) (2023-06-02)
+
+
+### Features
+
+* 合并后的自动化 ([8c2826c](https://github.com/Lycofuture/Yunzai-Bot/commit/8c2826c1162a28a1cca5d8155759bccade2bd9c3))
+
 ## [1.1.0](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.6...v1.1.0) (2023-06-02)
 
 
