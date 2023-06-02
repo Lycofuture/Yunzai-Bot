@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.6](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.5...v1.0.6) (2023-06-02)
+
+
+### Styling
+
+* 更新方法 ([f5a490c](https://github.com/Lycofuture/Yunzai-Bot/commit/f5a490c4506bf98b463531bc891756a91ad15386))
+* 更新方法 ([0051714](https://github.com/Lycofuture/Yunzai-Bot/commit/0051714c000d3b8c90994c3c10e9975e2b5ec4f5))
+
 ## [1.0.5](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.4...v1.0.5) (2023-06-02)
 
 
