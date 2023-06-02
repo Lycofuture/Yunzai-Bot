@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 莱
+      - dev
   pull_request:
     branches:
-     - 莱
+     - dev
 
 jobs:
   build:
