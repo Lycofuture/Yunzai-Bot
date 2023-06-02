@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.3](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.2...v1.0.3) (2023-06-02)
+
+
+### Bug Fixes
+
+* 更换icqq ([78046b7](https://github.com/Lycofuture/Yunzai-Bot/commit/78046b713d1ebff625e05ff51b28c35725b01e20))
+* 更换icqq ([60a8336](https://github.com/Lycofuture/Yunzai-Bot/commit/60a833668413ba0ea483ec989d4847630c50b732))
+
 ## [1.0.2](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.1...v1.0.2) (2023-06-01)
 
 
