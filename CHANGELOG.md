@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.4...v1.0.5) (2023-06-02)
+
+
+### Bug Fixes
+
+* 去除主人不限制 ([6d16440](https://github.com/Lycofuture/Yunzai-Bot/commit/6d164404b6ef74a4317cba22fefb1c5f0a19a2de))
+
 ## [1.0.4](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.0.3...v1.0.4) (2023-06-02)
 
 
