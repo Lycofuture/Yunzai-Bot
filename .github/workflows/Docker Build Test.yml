@@ -39,7 +39,17 @@ jobs:
           release-type: node
           token: ${{ secrets.TOKEN }}
           pull-request-header: robot:I have created a release *beep* *boop*.
-          fork: true
-          #package-name: release-please-action
-         # component: true
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
+          
+      - name: Create Tag
+       # if: contains(github.ref, 'refs/heads/main')
+        run: git tag v${{ env.RELEASE_VERSION }}
+        env:
+          RELEASE_VERSION: ${{ steps.generate_release_notes.outputs.version }}
+
+      - name: Push Tag
+      #  if: contains(github.ref, 'refs/heads/main')
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
