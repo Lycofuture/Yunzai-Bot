@@ -43,12 +43,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Extract labels from commit message
-        id: extract_labels
-        run: |
-          COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.event.pull_request.head.sha }})
-          echo "::set-output name=labels::$(grep -oE '#[A-Za-z0-9_]+' <<< "$COMMIT_MESSAGE" | tr '\n' ',')"
-          
       - name: Get commit message
         id: commit_message
         run: echo "::set-output name=message::$(git log --format=%B -n 1 ${{ github.event.pull_request.head.sha }})"
@@ -56,12 +50,7 @@ jobs:
         uses: "pascalgn/automerge-action@v0.15.6"
         env:
            GITHUB_TOKEN: "${{ secrets.TOKEN }}"
-           MERGE_LABELS: ${{ steps.extract_labels.outputs.labels }}
-           commit-message: '%t [skip ci]'
+           MERGE_LABELS: ${{ steps.commit_message.outputs.message }}
            MERGE_COMMIT_MESSAGE_REGEX: (.*)^---
            PULL_REQUEST_TITLE: ${{ steps.commit_message.outputs.message }}
-        with:
-           major-label: 'major'
-           minor-label: 'feat'
-           patch-label: 'fix'
-           labels: ${{ steps.extract_labels.outputs.labels }}
+        
