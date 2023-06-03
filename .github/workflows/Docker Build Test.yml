@@ -12,13 +12,15 @@ on:
       - 'v*'
     branches:
      - dev
-
+permissions:
+    contents: write
+    pull-requests: write
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+    #  - uses: actions/checkout@v2
       
      # - name: Modify Build File
      #   run: sed -i "s|# build|build|g" ./docker-compose.yaml 
@@ -32,24 +34,7 @@ jobs:
 
    #   - name: Run Test Script
      #   run: docker exec yunzai-bot npm --prefix=/app/Yunzai-Bot run test
-      - name: Get last tag
-        id: get_last_tag
-        run: echo ::set-output name=last_tag::$(git describe --tags --abbrev=0)
-      
-      # Get the commits since the last tag by type (fix, feat, docs, etc.)
-      - name: Get commits since last tag by type
-        id: get_commits_by_type
-        env:
-          VALID_TYPES: "(fix|feat|docs)"
-        run: |
-          git log --pretty=format:"- %s (%h)" ${{ steps.get_last_tag.outputs.last_tag }}..HEAD | grep -E "^- (env.VALID_TYPES):" > changelog.txt
-          echo ::set-output name=changelog::$(cat changelog.txt || echo "")
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - uses: google-github-actions/release-please-action@v3
         with:
-          tag_name: ${GITHUB_REF#refs/tags/}
-          release_name: Release ${GITHUB_REF#refs/tags/}
-          body: ${{ steps.get_commits_by_type.outputs.changelog }}
+          release-type: node
+          package-name: release-please-action
