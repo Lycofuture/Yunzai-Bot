@@ -32,50 +32,9 @@ jobs:
 
    #   - name: Run Test Script
      #   run: docker exec yunzai-bot npm --prefix=/app/Yunzai-Bot run test
-      - name: Configure GPG key
-        run: |
-          gpg --import <(echo "${{ secrets.GPG_PRIVATE_KEY }}")
-          git config --global user.signingkey ${{ secrets.GPG_KEY_ID }}
-
+      
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
           token: ${{ secrets.TOKEN }}
-          release-type: node
-          package-name: standard-version
-          changelog-types: '[{"type": "types", "section":"Types", "hidden": false},{"type": "revert", "section":"Reverts", "hidden": false},{"type": "feat", "section": "Features", "hidden": false},{"type": "fix", "section": "Bug Fixes", "hidden": false},{"type": "improvement", "section": "Feature Improvements", "hidden": false},{"type": "docs", "section":"Docs", "hidden": false},{"type": "style", "section":"Styling", "hidden": false},{"type": "refactor", "section":"Code Refactoring", "hidden": false},{"type": "perf", "section":"Performance Improvements", "hidden": false},{"type": "test", "section":"Tests", "hidden": false},{"type": "build", "section":"Build System", "hidden": false},{"type": "ci", "section":"CI", "hidden":false}]'
-      - uses: actions/checkout@v2
-      - name: tag major and minor versions
-        if: ${{ steps.release.outputs.release_created }}
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git remote add gh-token "https://${{ secrets.TOKEN }}@github.com/google-github-actions/release-please-action.git"
-          git tag -d v${{ steps.release.outputs.major }} || true
-          git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
-          git push origin :v${{ steps.release.outputs.major }} || true
-          git push origin :v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
-          git tag -a v${{ steps.release.outputs.major }} -m "Release v${{ steps.release.outputs.major }}"
-          git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
-          git push origin v${{ steps.release.outputs.major }}
-          git push origin v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
-      - name: Upload Release Artifact
-        if: ${{ steps.release.outputs.release_created }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        run:
-          gh release upload ${{ steps.release.outputs.tag_name }} ./artifact/some-build-artifact.zip
-      - name: Create Release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.release.outputs.release_created }}
-          prerelease: false
-      - name: Sign Tag
-        if: env.RELEASE_GPG_SIGN == 'true'
-        run: |
-         git tag -s ${{ steps.release.outputs.version }} -m "Release ${{ steps.release.outputs.version }}" -u ${{ secrets.GPG_KEY_ID }}
-         git push origin ${{ steps.release.outputs.version }}
+          primaryBranch: dev
