@@ -33,8 +33,22 @@ jobs:
    #   - name: Run Test Script
      #   run: docker exec yunzai-bot npm --prefix=/app/Yunzai-Bot run test
       
-      - uses: google-github-actions/release-please-action@v3
-        id: release
+      - name: Get last tag
+        id: get_last_tag
+        run: echo ::set-output name=last_tag::$(git describe --tags --abbrev=0)
+      
+      - name: Get commits since last tag
+        id: get_commits
+        run: |
+          git log --pretty=format:"- %s" ${{ steps.get_last_tag.outputs.last_tag }}..HEAD > changelog.txt
+          echo ::set-output name=changelog::$(cat changelog.txt || echo "")
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          token: ${{ secrets.TOKEN }}
-          primaryBranch: dev
+          tag_name: v${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ steps.get_commits.outputs.changelog }}
