@@ -45,9 +45,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.release.outputs.changelog }}
+          tag_name: ${{ steps.generate_release_version.outputs.tag }}
+          release_name: Release ${{ steps.generate_release_version.outputs.tag }}
+          body: ${{ steps.generate_release_version.outputs.changelog }}
           prerelease: false
       - name: Sign Tag
         if: env.RELEASE_GPG_SIGN == 'true'
