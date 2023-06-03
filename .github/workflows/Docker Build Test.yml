@@ -91,18 +91,18 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           tags: true
           branch: dev
-      - name: Generate release notes
-        run: |
-          echo "## Changes" > release_notes.md
-          git log --pretty=format:"- %s [view commit](http://github.com/${GITHUB_REPOSITORY}/commit/%H)" ${GITHUB_REF/refs\/heads\//}... >> release_notes.md
-          cat release_notes.md
+      - name: Get commit message
+
+        id: commit_message
+
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 ${{ github.event.pull_request.head.sha }})"
       - name: Publish Release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ steps.versioning.outputs.version }}
           release_name: Release ${{ steps.versioning.outputs.version }}
           body: |
-            ${cat release_notes.md}
+            ${{ steps.commit_message.outputs.message }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
