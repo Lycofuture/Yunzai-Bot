@@ -32,23 +32,24 @@ jobs:
 
    #   - name: Run Test Script
      #   run: docker exec yunzai-bot npm --prefix=/app/Yunzai-Bot run test
-      
       - name: Get last tag
         id: get_last_tag
         run: echo ::set-output name=last_tag::$(git describe --tags --abbrev=0)
       
-      - name: Get commits since last tag
-        id: get_commits
+      # Get the commits since the last tag by type (fix, feat, docs, etc.)
+      - name: Get commits since last tag by type
+        id: get_commits_by_type
+        env:
+          VALID_TYPES: "fix|feat|docs"
         run: |
-          git log --pretty=format:"- %s" ${{ steps.get_last_tag.outputs.last_tag }}..HEAD > changelog.txt
+          git log --pretty=format:"- %s (%h)" ${{ steps.get_last_tag.outputs.last_tag }}..HEAD | grep -E "^- ($VALID_TYPES):" > changelog.txt
           echo ::set-output name=changelog::$(cat changelog.txt || echo "")
-      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: v${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.get_commits.outputs.changelog }}
+          tag_name: ${GITHUB_REF#refs/tags/}
+          release_name: Release ${GITHUB_REF#refs/tags/}
+          body: ${{ steps.get_commits_by_type.outputs.changelog }}
