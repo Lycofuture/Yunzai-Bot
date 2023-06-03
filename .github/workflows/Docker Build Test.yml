@@ -16,18 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Modify Build File
-        run: sed -i "s|# build|build|g" ./docker-compose.yaml 
-             && sed -i "s|gitee|github|g" ./docker/Dockerfile
+     # - name: Modify Build File
+     #   run: sed -i "s|# build|build|g" ./docker-compose.yaml 
+       #      && sed -i "s|gitee|github|g" ./docker/Dockerfile
 
-      - name: Build Docker Images
-        run: docker compose up -d --build
+    #  - name: Build Docker Images
+    #    run: docker compose up -d --build
 
-      - name: Use Default Config
-        run: docker cp docker/qq.yaml yunzai-bot:/app/Yunzai-Bot/config/config
+     # - name: Use Default Config
+   #     run: docker cp docker/qq.yaml yunzai-bot:/app/Yunzai-Bot/config/config
 
-      - name: Run Test Script
-        run: docker exec yunzai-bot npm --prefix=/app/Yunzai-Bot run test
+   #   - name: Run Test Script
+     #   run: docker exec yunzai-bot npm --prefix=/app/Yunzai-Bot run test
       - name: Configure GPG key
         run: |
           gpg --import <(echo "${{ secrets.GPG_PRIVATE_KEY }}")
@@ -45,8 +45,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: ${{ steps.release.outputs.version }}
-          release_name: Release ${{ steps.release.outputs.version }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           body: ${{ steps.release.outputs.changelog }}
           prerelease: false
       - name: Sign Tag
