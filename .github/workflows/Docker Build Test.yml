@@ -20,8 +20,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    #  - uses: actions/checkout@v2
-      
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
      # - name: Modify Build File
      #   run: sed -i "s|# build|build|g" ./docker-compose.yaml 
        #      && sed -i "s|gitee|github|g" ./docker/Dockerfile
@@ -40,10 +41,46 @@ jobs:
           token: ${{ secrets.TOKEN }}
           pull-request-header: robot:I have created a release *beep* *boop*.
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
-      - uses: actions/checkout@v2
+      - name: Determine version number
+
+        id: versioning
+
+        run: |
+
+          LAST_TAG=$(git describe --abbrev=0 --tags || echo "v3.0")
+
+          if [[ $LAST_TAG =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)?(-\S+)?$ ]]; then
+
+            MAJOR=${BASH_REMATCH[1]}
+
+            MINOR=${BASH_REMATCH[2]}
+
+            PATCH=${BASH_REMATCH[3]}
+
+            if [ -n "${BASH_REMATCH[4]}" ]; then
+
+              PRE="${BASH_REMATCH[4]}"
+
+              PATCH=$((PATCH + 1))
+
+            fi
+
+          else
+
+            MAJOR=3
+
+            MINOR=0
+
+            PATCH=1
+
+          fi
+
+          VERSION="$MAJOR.$MINOR.$PATCH$PRE"
+
+          echo ::set-output name=version::$VERSION
       - name: Create Tag
        # if: contains(github.ref, 'refs/heads/main')
-        run: git tag v${{ env.RELEASE_VERSION }}
+        run: git tag v${{ steps.versioning.outputs.version }}
         env:
           RELEASE_VERSION: ${{ steps.generate_release_notes.outputs.version }}
 
