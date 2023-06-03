@@ -37,7 +37,8 @@ jobs:
      #   run: docker exec yunzai-bot npm --prefix=/app/Yunzai-Bot run test
       - uses: google-github-actions/release-please-action@v3
         with:
-          package-type: node
+          release-type: node
+          #package-type: node
           token: ${{ secrets.TOKEN }}
           pull-request-header: 'robot: I have created a release *beep* *boop*.'
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
