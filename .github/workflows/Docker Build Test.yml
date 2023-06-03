@@ -40,7 +40,7 @@ jobs:
       - name: Get commits since last tag by type
         id: get_commits_by_type
         env:
-          VALID_TYPES: "fix|feat|docs"
+          VALID_TYPES: "(fix|feat|docs)"
         run: |
           git log --pretty=format:"- %s (%h)" ${{ steps.get_last_tag.outputs.last_tag }}..HEAD | grep -E "^- ($VALID_TYPES):" > changelog.txt
           echo ::set-output name=changelog::$(cat changelog.txt || echo "")
