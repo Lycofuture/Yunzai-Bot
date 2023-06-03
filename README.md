@@ -1,4 +1,5 @@
 # Yunzai-Bot v3(续航版)
+[![docker test](https://github.com/Lycofuture/Yunzai-Bot/actions/workflows/Docker%20Build%20Test.yml/badge.svg?branch=dev&event=push)](https://github.com/Lycofuture/Yunzai-Bot/actions/workflows/Docker%20Build%20Test.yml)
 
 云崽v3.0，原神qq群机器人，通过米游社接口，查询原神游戏信息，快速生成图片返回
 
