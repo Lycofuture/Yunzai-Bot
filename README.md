@@ -16,15 +16,10 @@
 如果上面的点不开可[点击此处](https://gitee.com/lycofuture/Yunzai-Bot/wikis/安装教程)
 
 ## 致谢
-
 | Nickname                                                     | Contribution                        |
-
 | :----------------------------------------------------------: | ----------------------------------- |
-
 |[GardenHamster](https://github.com/GardenHamster/GenshinPray) | 模拟抽卡背景素材来源 |
-
 |[西风驿站](https://bbs.mihoyo.com/ys/collection/839181) | 角色攻略图来源 |
-
 |[米游社友人A](https://bbs.mihoyo.com/ys/collection/428421) | 角色突破素材图来源 |
 
 ## 其他
