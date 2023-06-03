@@ -1,5 +1,51 @@
 # Changelog
 
+## [1.6.0](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.5.0...v1.6.0) (2023-06-03)
+
+
+### Features
+
+* CI test ([50259f9](https://github.com/Lycofuture/Yunzai-Bot/commit/50259f9b002cee65bf72d46f11682d794da5feb0))
+* 合并后的自动化 ([8c2826c](https://github.com/Lycofuture/Yunzai-Bot/commit/8c2826c1162a28a1cca5d8155759bccade2bd9c3))
+* 合并后的自动化 ([c40ac17](https://github.com/Lycofuture/Yunzai-Bot/commit/c40ac1704cd8e24c58c563bf30e20ac5ac542d88))
+* 更新地址 ([40308be](https://github.com/Lycofuture/Yunzai-Bot/commit/40308be598b244bb2f59a9766dec9a6d8c6ea6c1))
+* 添加表情功能支持全局添加和触发 ([8f3043d](https://github.com/Lycofuture/Yunzai-Bot/commit/8f3043d3d048517b8faa6b30cba9d359e211f1b4))
+* 版本构建 ([4f53664](https://github.com/Lycofuture/Yunzai-Bot/commit/4f5366496bcecaa6ae5b2303729b8782a7847058))
+
+
+### Bug Fixes
+
+* CI tools auto build latest code for test ([db8f12e](https://github.com/Lycofuture/Yunzai-Bot/commit/db8f12ef64e3d1a184e68731c551efe3a7192633))
+* Update Docker Build Test.yml ([ed0912d](https://github.com/Lycofuture/Yunzai-Bot/commit/ed0912dd64dd454a5e14982deb2e77eb3074fff4))
+* 修复automerge ([1cafc56](https://github.com/Lycofuture/Yunzai-Bot/commit/1cafc5642cae489d94505d9e81e1f12250e46c2e))
+* 原石统计 ([75908f3](https://github.com/Lycofuture/Yunzai-Bot/commit/75908f3d4822f20492049758cb18533b489d2b7e))
+* 原石统计 ([0b2de3f](https://github.com/Lycofuture/Yunzai-Bot/commit/0b2de3f68f4ae7e5f1fe116d27816a2660dc6b99))
+* 去除主人不限制 ([6d16440](https://github.com/Lycofuture/Yunzai-Bot/commit/6d164404b6ef74a4317cba22fefb1c5f0a19a2de))
+* 处理如果用户配置文件enable和disable都为空时，所有功能都会被禁用问题 ([f805af6](https://github.com/Lycofuture/Yunzai-Bot/commit/f805af6ea06f34435f5c02f43e2518a268272846))
+* 定时任务日志配置报错问题 ([9540ac5](https://github.com/Lycofuture/Yunzai-Bot/commit/9540ac5b0d4b2da7a99d5d4f05d31c86949dd4af))
+* 更换icqq ([78046b7](https://github.com/Lycofuture/Yunzai-Bot/commit/78046b713d1ebff625e05ff51b28c35725b01e20))
+* 更换icqq ([60a8336](https://github.com/Lycofuture/Yunzai-Bot/commit/60a833668413ba0ea483ec989d4847630c50b732))
+* 构建版本 ([e5adc7f](https://github.com/Lycofuture/Yunzai-Bot/commit/e5adc7fcfc7c195a7beda7b5bd5c22f790ce50e5))
+* 添加Android_8.8.88登录端口 ([b031434](https://github.com/Lycofuture/Yunzai-Bot/commit/b031434f2faa636df3955493f946b689a47583b1))
+
+
+### Miscellaneous
+
+* **dev:** release 1.0.0 ([cd637af](https://github.com/Lycofuture/Yunzai-Bot/commit/cd637af6b0785148a53c7a80ea3366c43b28d2a4))
+* **dev:** release 1.0.1 ([beb5a93](https://github.com/Lycofuture/Yunzai-Bot/commit/beb5a938bd6f74e9fac93c2eb7e4a5d5ec520447))
+* **dev:** release 1.0.2 ([a46ef09](https://github.com/Lycofuture/Yunzai-Bot/commit/a46ef09dc45efdb90833415446f3093507acff49))
+* **dev:** release 1.0.3 ([a43212e](https://github.com/Lycofuture/Yunzai-Bot/commit/a43212ec8814249d52c585b00c547dac4614a88d))
+* **dev:** release 1.0.4 ([2b87218](https://github.com/Lycofuture/Yunzai-Bot/commit/2b872187793d56cb30f89c414a845c50985502c8))
+* **dev:** release 1.0.5 ([e2ab063](https://github.com/Lycofuture/Yunzai-Bot/commit/e2ab063bd822dbee8023b1cca34a3c707845cf9c))
+* **dev:** release 1.0.6 ([9216354](https://github.com/Lycofuture/Yunzai-Bot/commit/92163546621dfadba0c2add2f20a5709e8e5990e))
+* **dev:** release 1.1.0 ([4353c70](https://github.com/Lycofuture/Yunzai-Bot/commit/4353c70f1380414645f9ef2af1009d41f6650d39))
+* **dev:** release 1.2.0 ([4cd3d10](https://github.com/Lycofuture/Yunzai-Bot/commit/4cd3d1057f551f46a883d35bfb12d35a2bd6874d))
+* **dev:** release 1.2.1 ([9a59462](https://github.com/Lycofuture/Yunzai-Bot/commit/9a594627f6e6fdbac1744e631df08ed0dcfe3410))
+* **dev:** release 1.3.0 ([db3312b](https://github.com/Lycofuture/Yunzai-Bot/commit/db3312b5d051475d76e862cf2e55b04f3338a3aa))
+* **dev:** release 1.4.0 ([510c323](https://github.com/Lycofuture/Yunzai-Bot/commit/510c3235cf6476ba894a77ee2cb58540af37952f))
+* **dev:** release 1.5.0 ([1601795](https://github.com/Lycofuture/Yunzai-Bot/commit/16017956d568dcc19314161067cc2ac919ac52b1))
+* 添加定时任务可设置是否显示执行日志 ([3869254](https://github.com/Lycofuture/Yunzai-Bot/commit/38692544dbcf650e9715ea83fb9d65ee83024233))
+
 ## [1.5.0](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.4.0...v1.5.0) (2023-06-03)
 
 
