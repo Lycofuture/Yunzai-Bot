@@ -47,7 +47,7 @@ jobs:
           COMMIT_MESSAGE=$(git log --format=%B -n 1 ${{ github.event.pull_request.head.sha }})
           echo $COMMIT_MESSAGE >> $GITHUB_ENV
       - name: Automerge
-        uses: pascalgn/automerge-action@v0.18.0
+        uses: pascalgn/automerge-action@v0.15.6
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           MERGE_LABELS: ${{ steps.commit_message.outputs.message }}
