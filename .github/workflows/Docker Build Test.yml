@@ -42,7 +42,7 @@ jobs:
         env:
           VALID_TYPES: "(fix|feat|docs)"
         run: |
-          git log --pretty=format:"- %s (%h)" ${{ steps.get_last_tag.outputs.last_tag }}..HEAD | grep -E "^- ($VALID_TYPES):" > changelog.txt
+          git log --pretty=format:"- %s (%h)" ${{ steps.get_last_tag.outputs.last_tag }}..HEAD | grep -E "^- (env.VALID_TYPES):" > changelog.txt
           echo ::set-output name=changelog::$(cat changelog.txt || echo "")
       - name: Create Release
         id: create_release
