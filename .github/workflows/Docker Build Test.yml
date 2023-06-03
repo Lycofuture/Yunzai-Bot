@@ -40,6 +40,6 @@ jobs:
           token: secrets.TOKEN
           pull-request-header: robot:I have created a release *beep* *boop*.
           fork: true
-          package-name: release-please-action
+          #package-name: release-please-action
           component: true
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
