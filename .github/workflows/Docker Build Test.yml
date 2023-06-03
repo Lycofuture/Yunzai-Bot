@@ -43,7 +43,9 @@ jobs:
           
       - name: Create Tag
        # if: contains(github.ref, 'refs/heads/main')
-        run: git tag v${{ env.RELEASE_VERSION }}
+        run: |
+          cd Yunzai-Bot
+          git tag v${{ env.RELEASE_VERSION }}
         env:
           RELEASE_VERSION: ${{ steps.generate_release_notes.outputs.version }}
 
