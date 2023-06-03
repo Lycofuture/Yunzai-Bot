@@ -37,7 +37,7 @@ jobs:
       - uses: google-github-actions/release-please-action@v3
         with:
           release-type: node
-          token: secrets.TOKEN
+          token: ${{ secrets.TOKEN }}
           pull-request-header: robot:I have created a release *beep* *boop*.
           fork: true
           #package-name: release-please-action
