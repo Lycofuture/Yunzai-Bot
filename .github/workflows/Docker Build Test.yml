@@ -91,3 +91,13 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           tags: true
           branch: dev
+      - name: Publish Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.versioning.outputs.version }}
+          release_name: Release ${{ steps.versioning.outputs.version }}
+          body: |
+            ${{ steps.generate_release_notes.outputs.body }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
