@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.2.0...v1.2.1) (2023-06-03)
+
+
+### Bug Fixes
+
+* Update Docker Build Test.yml ([ed0912d](https://github.com/Lycofuture/Yunzai-Bot/commit/ed0912dd64dd454a5e14982deb2e77eb3074fff4))
+
 ## [1.2.0](https://github.com/Lycofuture/Yunzai-Bot/compare/v1.1.0...v1.2.0) (2023-06-02)
 
 
