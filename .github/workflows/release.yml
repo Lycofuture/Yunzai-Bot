@@ -1,0 +1,41 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js latest
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+          cache: 'npm'
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.6.0
+        with:
+          redis-version: 7
+          redis-port: 6379
+      - name: Yunzai-Bot run
+        run: |
+          npm install
+          
+          cp docker/qq.yaml config/config/qq.yaml
+          
+          npm test
+      - name: Read package.json
+        uses: tyankatsu0105/read-package-version-actions@v1
+        id: package-version
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: node
+          package-name: ${{ steps.package-version.outputs.name }}
+          version-file: ${{ steps.package-version.outputs.version }}
+          changelog-types: '[{"type":"feat","section":"新增功能","hidden":false},{"type":"fix","section":"修复 BUG","hidden":false},{"type":"chore","section":"内容更新","hidden":false},{"type":"","section":"更新内容","hidden":true}]'

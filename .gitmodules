@@ -1,0 +1,20 @@
+[submodule "plugins/xiaoyao-cvs-plugin"]
+	path = plugins/xiaoyao-cvs-plugin
+	url = https://github.com/Ctrlcvs/xiaoyao-cvs-plugin.git
+	branch = master
+[submodule "plugins/yenai-plugin"]
+	path = plugins/yenai-plugin
+	url = https://github.com/yeyang52/yenai-plugin.git
+	branch = master
+[submodule "plugins/miao-plugin"]
+	path = plugins/miao-plugin
+	url = https://github.com/yoimiya-kokomi/miao-plugin.git
+	branch = master
+[submodule "plugins/StarRail-plugin"]
+	path = plugins/StarRail-plugin
+	url = https://github.com/hewang1an/StarRail-plugin.git
+	branch = main
+[submodule "plugins/yaya-plugin"]
+	path = plugins/yaya-plugin
+	url = https://github.com/Lycofuture/yaya-plugin.git
+	branch = main
