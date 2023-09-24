@@ -17,25 +17,20 @@ export class add extends plugin {
       dsc: '添加表情，文字等',
       event: 'message',
       priority: 50000,
-      rule: [
-        {
-          reg: '^#(全局)?添加(.*)',
-          fnc: 'add'
-        },
-        {
-          reg: '^#(全局)?删除(.*)',
-          fnc: 'del'
-        },
-        {
-          reg: '(.*)',
-          fnc: 'getText',
-          log: false
-        },
-        {
-          reg: '#(全局)?(表情|词条)(.*)',
-          fnc: 'list'
-        }
-      ]
+      rule: [{
+        reg: '^#(全局)?添加(.*)',
+        fnc: 'add'
+      }, {
+        reg: '^#(全局)?删除(.*)',
+        fnc: 'del'
+      }, {
+        reg: '(.*)',
+        fnc: 'getText',
+        log: false
+      }, {
+        reg: '#(全局)?(表情|词条)(.*)',
+        fnc: 'list'
+      }]
     })
 
     this.path = './data/textJson/'
@@ -103,7 +98,7 @@ export class add extends plugin {
 
     if (this.e.isGroup) {
       this.group_id = this.e.group_id
-      await redis.setEx(this.grpKey, 3600 * 24 * 30, String(this.group_id))
+      redis.setEx(this.grpKey, 3600 * 24 * 30, String(this.group_id))
       return this.group_id
     }
 
@@ -120,15 +115,12 @@ export class add extends plugin {
   checkAuth () {
     if (this.e.isMaster) return true
 
-    let {
-      addPrivate,
-      imgAddLimit
-    } = cfg.getGroup(this.group_id)
-    if (imgAddLimit === 2) {
+    let groupCfg = cfg.getGroup(this.group_id)
+    if (groupCfg.imgAddLimit == 2) {
       this.e.reply('暂无权限，只有主人才能操作')
       return false
     }
-    if (imgAddLimit === 1) {
+    if (groupCfg.imgAddLimit == 1) {
       if (!this.e.bot.gml.has(this.group_id)) {
         return false
       }
@@ -141,7 +133,7 @@ export class add extends plugin {
       }
     }
 
-    if (!this.e.isGroup && addPrivate !== 1) {
+    if (!this.e.isGroup && groupCfg.addPrivate != 1) {
       this.e.reply('禁止私聊添加')
       return false
     }
@@ -156,10 +148,7 @@ export class add extends plugin {
     }
 
     if (this.e.at) {
-      let at = lodash.filter(this.e.message, ({
-        qq,
-        type
-      }) => { return type === 'at' && qq !== this.e.bot.uin })
+      let at = lodash.filter(this.e.message, (o) => { return o.type == 'at' && o.qq != this.e.bot.uin })
       if (at.length > 1) {
         this.e.reply('添加错误：只能@一个人当关键词')
         return false
@@ -176,7 +165,7 @@ export class add extends plugin {
 
   /** 单独添加 */
   async singleAdd () {
-    if (this.e.message.length !== 2) return false
+    if (this.e.message.length != 2) return false
     let msg = lodash.keyBy(this.e.message, 'type')
     if (!this.e.msg || !msg.image) return false
 
@@ -219,7 +208,8 @@ export class add extends plugin {
 
   /** 过滤别名 */
   trimAlias (msg) {
-    let { botAlias: alias } = cfg.getGroup(this.group_id)
+    let groupCfg = cfg.getGroup(this.group_id)
+    let alias = groupCfg.botAlias
     if (!Array.isArray(alias)) {
       alias = [alias]
     }
@@ -247,23 +237,24 @@ export class add extends plugin {
     this.finish('addContext')
 
     for (let i in message) {
-      if (message[i].type === 'at') {
-        if (message[i].qq === this.e.bot.uin) {
+      if (message[i].type == 'at') {
+        if (message[i].qq == this.e.bot.uin) {
           this.e.reply('添加内容不能@机器人！')
           return
         }
       }
-      if (message[i].type === 'file') {
+      if (message[i].type == 'file') {
         this.e.reply('添加错误：禁止添加文件')
         return
       }
     }
 
-    if (message.length === 1 && message[0].type === 'image') {
+    if (message.length == 1 && message[0].type == 'image') {
       let local = await this.saveImg(message[0].url, keyWord)
       if (!local) return
       message[0].local = local
-      message[0].asface = !addImg
+      message[0].asface = true
+      if (addImg) message[0].asface = false
     }
 
     if (!textArr[this.group_id]) textArr[this.group_id] = new Map()
@@ -278,7 +269,7 @@ export class add extends plugin {
       textArr[this.group_id].set(keyWord, text)
     }
 
-    if (text.length > 1 && retMsg[0].type !== 'image') {
+    if (text.length > 1 && retMsg[0].type != 'image') {
       retMsg.push(String(text.length))
     }
 
@@ -296,15 +287,16 @@ export class add extends plugin {
       msg = retMsg.addContext.message
 
       for (let i in msg) {
-        if (msg[i].type === 'text' && msg[i].text.includes('添加')) {
+        if (msg[i].type == 'text' && msg[i].text.includes('添加')) {
           msg[i].text = this.trimAlias(msg[i].text)
           msg[i].text = msg[i].text.trim().replace(/#|＃|图片|表情|添加|全局/g, '')
           if (!msg[i].text) delete msg[i]
           continue
         }
-        if (msg[i].type === 'at') {
-          if (msg[i].qq === this.e.bot.uin) {
+        if (msg[i].type == 'at') {
+          if (msg[i].qq == this.e.bot.uin) {
             delete msg[i]
+            continue
           } else {
             msg[i].text = ''
           }
@@ -314,7 +306,7 @@ export class add extends plugin {
     if (!msg && this.keyWord) {
       msg = [this.keyWord]
     }
-    return lodash.compact([msg])
+    return lodash.compact(msg)
   }
 
   saveJson () {
@@ -323,7 +315,7 @@ export class add extends plugin {
       obj[k] = v
     }
 
-    fs.writeFileSync(`${this.path}${this.group_id}.json`, JSON.stringify(obj, [], '\t'))
+    fs.writeFileSync(`${this.path}${this.group_id}.json`, JSON.stringify(obj, '', '\t'))
   }
 
   saveGlobalJson () {
@@ -332,14 +324,11 @@ export class add extends plugin {
       obj[k] = v
     }
 
-    fs.writeFileSync(
-      `${this.path}${this.e.bot.uin}.json`,
-      JSON.stringify(obj, [], '\t')
-    )
+    fs.writeFileSync(`${this.path}${this.e.bot.uin}.json`, JSON.stringify(obj, '', '\t'))
   }
 
   async saveImg (url, keyWord) {
-    let { imgMaxSize } = cfg.getGroup(this.group_id)
+    let groupCfg = cfg.getGroup(this.group_id)
     let savePath = `${this.facePath}${this.group_id}/`
 
     if (!fs.existsSync(savePath)) {
@@ -356,13 +345,13 @@ export class add extends plugin {
     }
 
     let imgSize = (response.headers.get('size') / 1024 / 1024).toFixed(2)
-    if (imgSize > 1024 * 1024 * imgMaxSize) {
+    if (imgSize > 1024 * 1024 * groupCfg.imgMaxSize) {
       this.e.reply(`添加失败：表情太大了，${imgSize}m`)
       return false
     }
 
     let type = response.headers.get('content-type').split('/')[1]
-    if (type === 'jpeg') type = 'jpg'
+    if (type == 'jpeg') type = 'jpg'
 
     if (fs.existsSync(`${savePath}${keyWord}.${type}`)) {
       keyWord = `${keyWord}_${moment().format('X')}`
@@ -371,7 +360,8 @@ export class add extends plugin {
     savePath = `${savePath}${keyWord}.${type}`
 
     const streamPipeline = promisify(pipeline)
-    await streamPipeline(response.body)
+    await streamPipeline(response.body, fs.createWriteStream(savePath))
+
     return savePath
   }
 
@@ -389,7 +379,7 @@ export class add extends plugin {
     this.initGlobalTextArr()
 
     let keyWord = this.e.toString()
-      .replace(/[#＃]+/g, '')
+      .replace(/#|＃/g, '')
       .replace(`{at:${this.e.bot.uin}}`, '')
       .trim()
 
@@ -398,6 +388,7 @@ export class add extends plugin {
     let num = 0
     if (isNaN(keyWord)) {
       num = keyWord.trim().match(/[0-9]+$/)?.[0]
+
       if (!isNaN(num) && !textArr[this.group_id].has(keyWord) && !textArr[this.e.bot.uin].has(keyWord)) {
         keyWord = lodash.trimEnd(keyWord, num).trim()
         num--
@@ -432,7 +423,7 @@ export class add extends plugin {
     if (Array.isArray(msg)) {
       msg.forEach(m => {
         /** 去除回复@@ */
-        if (m?.type === 'at') { delete m.text }
+        if (m?.type == 'at') { delete m.text }
       })
     }
 
@@ -551,14 +542,10 @@ export class add extends plugin {
 
         if (textArr[this.e.bot.uin].has(tmp[0])) continue
 
-        textArr[this.e.bot.uin].set(tmp[0], [
-          [
-            {
-              local: `${globalFacePath}/${val}`,
-              asface: true
-            }
-          ]
-        ])
+        textArr[this.e.bot.uin].set(tmp[0], [[{
+          local: `${globalFacePath}/${val}`,
+          asface: true,
+        },],])
       }
 
       this.saveGlobalJson()
@@ -594,14 +581,14 @@ export class add extends plugin {
 
     let arr = textArr[this.group_id].get(keyWord)
     if (!arr) {
-      await this.e.reply(`暂无此表情：${keyWord}`)
+      // await this.e.reply(`暂无此表情：${keyWord}`)
       return false
     }
 
     let tmp = []
     if (num) {
       if (!arr[index]) {
-        await this.e.reply(`暂无此表情：${keyWord}${num}`)
+        // await this.e.reply(`暂无此表情：${keyWord}${num}`)
         return false
       }
 
@@ -627,18 +614,27 @@ export class add extends plugin {
         textArr[this.group_id].set(keyWord, arr)
       }
     }
+    if (!num) num = ''
+
     let retMsg = [{
       type: 'text',
       text: '删除成功：'
     }]
     for (let msg of this.e.message) {
-      if (msg.type === 'text') {
+      if (msg.type == 'text') {
         msg.text = msg.text.replace(/#|＃|图片|表情|删除|全部|全局/g, '')
 
         if (!msg.text) continue
       }
       retMsg.push(msg)
     }
+    if (num > 0) {
+      retMsg.push({
+        type: 'text',
+        text: num
+      })
+    }
+
     await this.e.reply(retMsg)
 
     /** 删除图片 */
@@ -648,9 +644,10 @@ export class add extends plugin {
         img = item[0]
       }
       if (img.local) {
-        fs.unlink(img.local, () => {})
+        fs.unlink(img.local, () => { })
       }
     })
+
     this.saveJson()
   }
 
@@ -683,7 +680,7 @@ export class add extends plugin {
 
     let arr = []
     for (let [k, v] of textArr[this.group_id]) {
-      if (type === 'list') {
+      if (type == 'list') {
         arr.push({
           key: k,
           val: v,
@@ -700,9 +697,9 @@ export class add extends plugin {
     }
 
     let count = arr.length
-    // arr = arr.reverse()
+    arr = arr.reverse()
 
-    if (type === 'list') {
+    if (type == 'list') {
       arr = this.pagination(page, pageSize, arr)
     }
 
@@ -710,40 +707,40 @@ export class add extends plugin {
       return
     }
 
-    let msg = []
-    let result = []
-    let num = 0
+    let msg = [], result = [], num = 0
     for (let i in arr) {
       if (num >= page * pageSize) break
+
       let keyWord = await this.keyWordTran(arr[i].key)
       if (!keyWord) continue
       if (Array.isArray(keyWord)) {
         keyWord.unshift(`${num + 1}、`)
         // keyWord.push('\n')
-        keyWord.forEach(v => msg.push(v))
+        keyWord.push(v => msg.push(v))
       } else if (keyWord.type) {
         msg.push(`\n${num + 1}、`, keyWord)
       } else {
-        msg.push(`${num + 1}、${keyWord}`)
+        msg.push(`${num + 1}、`, keyWord)
       }
       num++
     }
+    /** 数组分段 */
     for (const i in msg) {
       result.push([msg[i]])
     }
+    /** 计算页数 */
     let book = count / pageSize
-
     if (book % 1 === 0) {
       book = result
     } else {
       book = Math.floor(book) + 1
     }
-    if (type === 'list' && count > pageSize && msg.length >= pageSize) {
+    if (type == 'list' && msg.length >= pageSize) {
       result.push(`更多内容请翻页查看\n如：#表情列表${Number(page) + 1}`)
     }
 
     let title = `表情列表，第${page}页，共${count}条，共${book}页`
-    if (type === 'search') {
+    if (type == 'search') {
       title = `表情${search}，${count}条`
     }
 
@@ -765,7 +762,7 @@ export class add extends plugin {
       let tmp = msg.split('{image')
       if (tmp.length > 2) return false
 
-      let md5 = tmp[1].replace(/[}_:]+/g, '')
+      let md5 = tmp[1].replace(/}|_|:/g, '')
 
       msg = segment.image(`http://gchat.qpic.cn/gchatpic_new/0/0-0-${md5}/0`)
       msg.asface = true
@@ -780,7 +777,7 @@ export class add extends plugin {
         msg = msg.replace(`{at:${qq}}`, `@${name}`)
       }
     } else if (msg.includes('{face')) {
-      let tmp = msg.match(/{face([:_])(.+?)}/g)
+      let tmp = msg.match(/{face(:|_)(.+?)}/g)
       if (!tmp) return msg
       msg = []
       for (let face of tmp) {
