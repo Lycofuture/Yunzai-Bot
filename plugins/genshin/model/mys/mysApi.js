@@ -112,11 +112,6 @@ export default class MysApi {
     }
     let response = {}
     let start = Date.now()
-    console.log({
-      url,
-      headers,
-      body
-    })
     try {
       response = await fetch(url, param)
     } catch (error) {
@@ -132,7 +127,6 @@ export default class MysApi {
       logger.mark(`[米游社接口][${type}][${this.uid}] ${Date.now() - start}ms`)
     }
     const res = await response.json()
-    console.log(res)
     if (!res) {
       logger.mark('mys接口没有返回')
       return false
@@ -216,7 +210,7 @@ export default class MysApi {
   /** 签到ds */
   getDsSign () {
     /** @Womsxd */
-    // const n = 'jEpJb9rRARU2rXDA9qYbZ3selxkuct9a'
+      // const n = 'jEpJb9rRARU2rXDA9qYbZ3selxkuct9a'
     const n = '6pNd5NnDnbwKxewrPwEoWlSYwhualS2H'
     const t = Math.round(new Date().getTime() / 1000)
     const r = lodash.sampleSize('abcdefghijklmnopqrstuvwxyz0123456789', 6).join('')
