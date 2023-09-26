@@ -163,12 +163,8 @@ export default class MysApi {
       client = cn
     }
     if (sign) {
-      let version = client.app_version2
-      if (body) {
-        version = client.app_version
-      }
       return {
-        'x-rpc-app_version': version,
+        'x-rpc-app_version': client.app_version2,
         'x-rpc-client_type': client.client_type,
         'x-rpc-device_id': this.option.device_id || this.getGuid(),
         'User-Agent': client.User_Agent,
@@ -177,7 +173,7 @@ export default class MysApi {
         'x-rpc-device_model': this.device,
         'x-rpc-device_name': this.device,
         'x-rpc-channel': 'miyousheluodi',
-        'x-rpc-sys_version': '6.0.1',
+        'x-rpc-sys_version': '13',
         Referer: client.Referer,
         DS: this.getDsSign()
       }
@@ -210,7 +206,8 @@ export default class MysApi {
   /** 签到ds */
   getDsSign () {
     /** @Womsxd */
-    const n = 'jEpJb9rRARU2rXDA9qYbZ3selxkuct9a'
+      // const n = 'jEpJb9rRARU2rXDA9qYbZ3selxkuct9a'
+    const n = '6pNd5NnDnbwKxewrPwEoWlSYwhualS2H'
     const t = Math.round(new Date().getTime() / 1000)
     const r = lodash.sampleSize('abcdefghijklmnopqrstuvwxyz0123456789', 6).join('')
     const DS = md5(`salt=${n}&t=${t}&r=${r}`)
