@@ -29,8 +29,16 @@ export default class MysApi {
     }
   }
 
+  get device () {
+    if (!this._device) this._device = `Yz-${md5(this.uid).substring(0, 5)}`
+    return this._device
+  }
+
   getUrl (type, data = {}) {
-    let urlMap = this.apiTool.getUrlMap(data)
+    let urlMap = this.apiTool.getUrlMap({
+      ...data,
+      deviceId: this.device
+    })
 
     if (!urlMap[type]) return false
     let {
@@ -78,7 +86,6 @@ export default class MysApi {
       headers,
       body
     } = this.getUrl(type, data)
-
     if (!url) return false
 
     let cacheKey = this.cacheKey(type, data)
@@ -105,6 +112,11 @@ export default class MysApi {
     }
     let response = {}
     let start = Date.now()
+    console.log({
+      url,
+      headers,
+      body
+    })
     try {
       response = await fetch(url, param)
     } catch (error) {
@@ -120,7 +132,7 @@ export default class MysApi {
       logger.mark(`[米游社接口][${type}][${this.uid}] ${Date.now() - start}ms`)
     }
     const res = await response.json()
-
+    console.log(res)
     if (!res) {
       logger.mark('mys接口没有返回')
       return false
@@ -139,8 +151,7 @@ export default class MysApi {
 
   getHeaders (query = '', body = '', sign = false) {
     const cn = {
-      app_version: '2.40.1',
-      app_version2: '2.57.1',
+      app_version: '2.59.1',
       User_Agent: `Mozilla/5.0 (Linux; Android 12; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.73 Mobile Safari/537.36 miHoYoBBS/2.40.1`,
       client_type: 5,
       Origin: 'https://webstatic.mihoyo.com',
@@ -164,18 +175,17 @@ export default class MysApi {
     }
     if (sign) {
       return {
-        'x-rpc-app_version': client.app_version2,
+        'x-rpc-device_fp': client.x_rpc_device_fp,
         'x-rpc-client_type': client.client_type,
+        DS: this.getDsSign(),
+        'x-rpc-app_version': client.app_version,
+        'User-Agent': `Mozilla/5.0 (Linux; Android 13; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.59.1`,
+        'Content-Type': 'application/json;charset=UTF-8',
         'x-rpc-device_id': this.option.device_id || this.getGuid(),
-        'User-Agent': client.User_Agent,
-        'X-Requested-With': client.X_Requested_With,
-        'x-rpc-platform': 'android',
-        'x-rpc-device_model': this.device,
-        'x-rpc-device_name': this.device,
-        'x-rpc-channel': 'miyousheluodi',
         'x-rpc-sys_version': '13',
-        Referer: client.Referer,
-        DS: this.getDsSign()
+        Origin: 'https://webstatic.mihoyo.com',
+        'X-Requested-With': 'com.mihoyo.hyperion',
+        Referer: 'https://webstatic.mihoyo.com/'
       }
     }
     return {
@@ -206,7 +216,7 @@ export default class MysApi {
   /** 签到ds */
   getDsSign () {
     /** @Womsxd */
-      // const n = 'jEpJb9rRARU2rXDA9qYbZ3selxkuct9a'
+    // const n = 'jEpJb9rRARU2rXDA9qYbZ3selxkuct9a'
     const n = '6pNd5NnDnbwKxewrPwEoWlSYwhualS2H'
     const t = Math.round(new Date().getTime() / 1000)
     const r = lodash.sampleSize('abcdefghijklmnopqrstuvwxyz0123456789', 6).join('')
