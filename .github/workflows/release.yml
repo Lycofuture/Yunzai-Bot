@@ -38,4 +38,4 @@ jobs:
           release-type: node
           package-name: ${{ steps.package-version.outputs.name }}
           version-file: ${{ steps.package-version.outputs.version }}
-          changelog-types: '[{"type":":sparkles:","section":"新增功能","hidden":false},{"type":":bug:","section":"修复 BUG","hidden":false},{"type":":memo:","section":"内容更新","hidden":false},{"type":"","section":"杂项","hidden":true}]'
+          changelog-types: '[{"type":"feat","section":"新增功能","hidden":false},{"type":"fix","section":"修复 BUG","hidden":false},{"type":"docs","section":"内容更新","hidden":false},{"type":"","section":"杂项","hidden":true}]'
