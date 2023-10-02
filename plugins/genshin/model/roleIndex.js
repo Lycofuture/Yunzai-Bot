@@ -435,7 +435,7 @@ export default class RoleIndex extends base {
 		for (let val of res.homes) {
 			let tmp = {
 				name: val.name,
-				iocn: val.icon,
+				icon: val.icon,
 				line: [
 					{ lable: '家园等级', num: val.level },
 					{ lable: '最高仙力', num: val.comfort_num },
@@ -447,7 +447,7 @@ export default class RoleIndex extends base {
 		}
 		const explor = []
 		for (let val of res.world_explorations) {
-			if (val.id == 7) continue
+			if (val.id === 7) continue
 			
 			val.name = this.areaName[val.id] ? this.areaName[val.id] : lodash.truncate(val.name, { length: 6 })
 			
@@ -461,16 +461,16 @@ export default class RoleIndex extends base {
 				]
 			}
 			
-			if ([ '蒙德', '璃月', '稻妻', '须弥' ].includes(val.name)) {
+			if ([ '蒙德', '璃月', '稻妻', '须弥', '枫丹' ].includes(val.name)) {
 				tmp.line.push({
 					name: '声望',
 					text: `${val.level}级`
 				})
 			}
 			
-			if (val.id == 6) {
+			if (val.id === 6) {
 				let underground = lodash.find(res.world_explorations, function (o) {
-					return o.id == 7
+					return o.id === 7
 				})
 				if (underground) {
 					tmp.line.push({
@@ -480,12 +480,21 @@ export default class RoleIndex extends base {
 				}
 			}
 			
-			if ([ '雪山', '稻妻', '层岩巨渊', '须弥' ].includes(val.name)) {
-				if (val.offerings[0].name.includes('流明石')) {
+			if ([ '雪山', '稻妻', '层岩巨渊', '须弥', '枫丹' ].includes(val.name)) {
+				if (val.offerings[0].name === '露景泉') {
+					val.offerings[0].name = '露景泉'
+				}
+				if (val.offerings[0].name === '梦之树') {
+					val.offerings[0].name = '梦之树'
+				}
+				if (val.offerings[0].name === '流明石触媒') {
 					val.offerings[0].name = '流明石'
 				}
-				if (val.offerings[0].name == '恒那兰那的梦之树') {
-					val.offerings[0].name = '梦之树'
+				if (val.offerings[0].name === '神樱眷顾') {
+					val.offerings[0].name = '神樱眷顾'
+				}
+				if (val.offerings[0].name === '忍冬之树') {
+					val.offerings[0].name = '忍冬之树'
 				}
 				
 				tmp.line.push({
@@ -495,10 +504,15 @@ export default class RoleIndex extends base {
 			}
 			explor.push(tmp)
 		}
+		console.log(res.avatars)
 		return {
 			saveId: this.e.uid,
 			uid: this.e.uid,
-			activeDay: this.dayCount(stats.active_day_number),
+			game_head_icon: res.role.game_head_icon,
+			nickname: res.role.nickname,
+			level: res.role.level,
+			region: res.role.region,
+			avatars: res.avatars,
 			line,
 			home,
 			explor,

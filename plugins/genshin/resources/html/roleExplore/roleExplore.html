@@ -12,9 +12,12 @@
 <body>
 <div class="container" id="container">
     <div class="head_box">
-        <div class="id_text">ID: {{uid}}</div>
-        <div class="day_text">{{activeDay}}</div>
-        <img class="genshin_logo" src="{{pluResPath}}img/other/原神.png">
+        <img alt="" class="icon" src="{{game_head_icon}}">
+        <div class="id_text">{{nickname}}
+            <span class="day_level">Lv.{{level}} </span>
+        </div>
+        <div class="day_text">{{region}} | UID: {{uid}}</div>
+        <img alt="" class="genshin_logo" src="{{pluResPath}}img/other/原神.png">
     </div>
     <div class="data_box">
         <div class="tab_lable">数据总览</div>
@@ -33,7 +36,7 @@
         <div class="tab_lable">地图探险</div>
         {{each explor val}}
         <div class="item">
-            <img class="icon" src="{{pluResPath}}img/other/{{val.name}}.png"/>
+            <img alt="" class="icon" src="{{pluResPath}}img/other/{{val.name}}.png"/>
             <div class="content">
                 {{each val.line line}}
                 <p class="name">{{line.name}}：<span class="num">{{line.text}}</span></p>
@@ -42,6 +45,23 @@
         </div>
         {{/each}}
     </div>
+    {{if avatars.length>0}}
+    <div class="avatars_box">
+        <div class="tab_lable">我的角色</div>
+        {{each avatars val}}
+        <div class="item">
+            <div class="role_box">
+                {{ if val.actived_constellation_num>0}}
+                <span class="life life{{val.actived_constellation_num}}"> {{val.actived_constellation_num}}命</span>
+                {{/if}}
+                <div class="bg{{val.rarity}}"></div>
+                <img alt="" class="role_img" src="{{val.image}}"/>
+                <div class="desc">Lv.{{val.level}} ❤{{val.fetter}}</div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
     <div class="logo">Created By Yunzai-Bot</div>
 </div>
 </body>
