@@ -14,3 +14,7 @@
 	path = plugins/yaya-plugin
 	url = https://github.com/Lycofuture/yaya-plugin.git
 	branch = main
+[submodule "plugins/StarRail-plugin"]
+	path = plugins/StarRail-plugin
+	url = https://github.com/hewang1an/StarRail-plugin.git
+	branch = main
