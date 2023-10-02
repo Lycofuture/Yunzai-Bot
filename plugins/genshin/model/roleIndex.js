@@ -504,7 +504,6 @@ export default class RoleIndex extends base {
 			}
 			explor.push(tmp)
 		}
-		console.log(res.avatars)
 		return {
 			saveId: this.e.uid,
 			uid: this.e.uid,
