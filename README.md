@@ -1,4 +1,5 @@
 # Yunzai-Bot v3
+
 [![docker test](https://github.com/Lycofuture/Yunzai-Bot/actions/workflows/Docker%20Build%20Test.yml/badge.svg?branch=main)](https://github.com/Lycofuture/Yunzai-Bot/actions/workflows/Docker%20Build%20Test.yml)
 [![release](https://github.com/Lycofuture/Yunzai-Bot/actions/workflows/release.yml/badge.svg)](https://github.com/Lycofuture/Yunzai-Bot/actions/workflows/release.yml)
 
@@ -11,34 +12,39 @@
 ## 使用方法
 
 > 环境准备： Windows or
-> Linux，Node.js([版本至少v16以上](http://nodejs.cn/download/))，[Redis](https://redis.io/docs/getting-started/installation/), git([版本至少v1.7以上](https://git-scm.com/downloads))
+>
+Linux，Node.js([版本至少v16以上](http://nodejs.cn/download/))，[Redis](https://redis.io/docs/getting-started/installation/),
+git([版本至少v1.7以上](https://git-scm.com/downloads))
 
 1.克隆项目
 
-```
+```bash
 git clone --depth=1 -b main https://github.com/Lycofuture/Yunzai-Bot.git
 ```
 
-```
+```bash
 cd Yunzai-Bot #进入Yunzai目录
 ```
 
 2.安装[pnpm](https://pnpm.io/zh/installation)，已安装的可以跳过
 
-```
+```bash
 npm install pnpm -g
 ```
 
 3.安装依赖
 
-```
-pnpm install -P && git submodule update --init --recursive
+```bash
+git submodule update --init --recursive
+ ```
 
+```bash
+pnpm install -P
 ```
 
 4.运行（首次运行按提示输入登录）
 
-```
+```bash
 node app
 ```
 
@@ -46,49 +52,49 @@ node app
 
 1. 执行(为了切换到本云崽)
 
-```
+```bash
 git remote set-url origin https://github.com/Lycofuture/Yunzai-Bot.git && git checkout main && git pull
 ```
 
 2. 执行(为了重置到最新的更新)
 
-```
+```bash
 git reset --hard origin/main && git pull && git submodule update --init --recursive && git submodule update --recursive --remote
 ```
 
 3. 执行(为了升级依赖，同时修复部分迁移用户因pm2问题无法重启与后台运行)
 
-```
+```bash
 pnpm update
 ```
 
-```
+```bash
 pnpm install -P
 ```
 
-```
+```bash
 pnpm install pm2 -g
 ```
 
-```
+```bash
 pm2 update
 ```
 
 4. 执行
 
-```
+```bash
 node ./node_modules/puppeteer/install.js
 ```
 
 5. 运行（首次运行按提示输入登录）
 
-```
+```bash
 node app
 ```
 
 6. 登陆后后台运行（先按ctrl+c终止机器人运行，然后输入)
 
-```
+```bash
 pnpm run start
 ```
 
