@@ -3,7 +3,8 @@ import plugin from '../../../lib/plugins/plugin.js'
 import GachaData from '../model/gachaData.js'
 import fs from 'node:fs'
 import lodash from 'lodash'
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
+import base from "../model/base.js";
+
 export class gacha extends plugin {
   constructor () {
     super({
@@ -33,7 +34,7 @@ export class gacha extends plugin {
     let data = await this.GachaData.run()
 
     /** 生成图片 */
-    let img = await puppeteer.screenshot('gacha', data)
+    let img = await new base(this.e).Render('gacha', data, 'base64')
     if (!img) return
 
     /** 撤回消息 */

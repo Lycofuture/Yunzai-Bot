@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import Note from '../model/note.js'
 import MysSign from '../model/mysSign.js'
 import gsCfg from '../model/gsCfg.js'
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
+import base from "../model/base.js";
 
 gsCfg.cpCfg('mys', 'set')
 
@@ -50,8 +50,7 @@ export class dailyNote extends plugin {
     if (!data) return
 
     /** 生成图片 */
-    let img = await puppeteer.screenshot('dailyNote', data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render('dailyNote', data)
   }
 
   /** #签到 */

@@ -1,11 +1,10 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import common from '../../../lib/common/common.js'
 import fetch from 'node-fetch'
-import lodash from 'lodash'
 import MysInfo from '../model/mys/mysInfo.js'
 
 export class exchange extends plugin {
-  constructor(e) {
+  constructor() {
     super({
       name: '兑换码',
       dsc: '前瞻直播兑换码',
@@ -33,8 +32,7 @@ export class exchange extends plugin {
 
     /** index info */
     let index = await this.getData('index')
-    if (!index || !index.data) return
-    if (index.data === null) {
+    if (!index || !index.data) {
       return await this.reply(`错误：\n${index.message}`)
     }
     
@@ -94,8 +92,7 @@ export class exchange extends plugin {
       logger.error(`[兑换码接口错误][${type}] ${response.status} ${response.statusText}`)
       return false
     }
-    const res = await response.json()
-    return res
+    return await response.json()
   }
 
   async getActId() {

@@ -1,6 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { PayData, renderImg } from '../model/payLogData.js'
-import url from 'url'
 import fs from 'fs'
 import path from 'path'
 import yaml from 'yaml'

@@ -5,7 +5,7 @@ import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import common from '../../../lib/common/common.js'
 import gsCfg from '../model/gsCfg.js'
 
-const _path = process.cwd()
+// const _path = process.cwd()
 let emoticon
 
 export default class MysNews extends base {
@@ -183,8 +183,7 @@ export default class MysNews extends base {
       logger.error(`[米游社接口错误][${type}] ${response.status} ${response.statusText}`)
       return false
     }
-    const res = await response.json()
-    return res
+    return await response.json()
   }
 
   async detalData (data) {
@@ -198,7 +197,7 @@ export default class MysNews extends base {
     if (typeof json == 'object') {
       if (json.imgs && json.imgs.length > 0) {
         for (const val of json.imgs) {
-          data.post.content = ` <div class="ql-image-box"><img src="${val}?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"></div>`
+          data.post.content = ` <div class="ql-image-box"><img src="${val}?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png" alt=""></div>`
         }
       }
     } else {
@@ -342,8 +341,8 @@ export default class MysNews extends base {
       })
     }
   }
-
-  async mysNewsTask (type = 1) {
+  
+  async mysNewsTask() {
     let cfg = gsCfg.getConfig('mys', 'pushNews')
 
     // 推送2小时内的公告资讯

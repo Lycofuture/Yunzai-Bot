@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import Ledger from '../model/ledger.js'
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import fs from 'node:fs'
+import base from "../model/base.js";
 
 export class ledger extends plugin {
   constructor () {
@@ -57,8 +57,7 @@ export class ledger extends plugin {
     if (!data) return
 
     /** 生成图片 */
-    let img = await puppeteer.screenshot('ledger', data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render('ledger', data)
   }
 
   /** 原石任务 */
@@ -72,8 +71,7 @@ export class ledger extends plugin {
     if (!data) return
 
     /** 生成图片 */
-    let img = await puppeteer.screenshot('ledgerCount', data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render('ledgerCount', data)
   }
 
   async ledgerCountHistory () {
@@ -81,7 +79,6 @@ export class ledger extends plugin {
     if (!data) return
 
     /** 生成图片 */
-    let img = await puppeteer.screenshot('ledgerCount', data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render('ledgerCount', data)
   }
 }

@@ -120,8 +120,8 @@ export default class Calculator extends base {
         rarity: four.includes(Number(this.role.roleId)) ? 4 : 5
       }
     }
-
-    skillList = skillList.filter((item) => item.max_level != 1)
+    
+    skillList = skillList.filter((item) => item.max_level !== 1)
 
     /** 拼接计算参数 */
     let body = {

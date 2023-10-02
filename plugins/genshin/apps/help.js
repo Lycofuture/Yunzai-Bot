@@ -1,15 +1,10 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import Help from '../model/help.js'
-import md5 from 'md5'
+import base from "../model/base.js";
 
-let helpData = {
-  md5: '',
-  img: ''
-}
 
 export class help extends plugin {
-  constructor (e) {
+  constructor() {
     super({
       name: '云崽帮助',
       dsc: '云崽帮助',
@@ -27,18 +22,6 @@ export class help extends plugin {
   async help () {
     let data = await Help.get(this.e)
     if (!data) return
-
-    let img = await this.cache(data)
-    await this.reply(img)
-  }
-
-  async cache (data) {
-    let tmp = md5(JSON.stringify(data))
-    if (helpData.md5 == tmp) return helpData.img
-
-    helpData.img = await puppeteer.screenshot('help', data)
-    helpData.md5 = tmp
-
-    return helpData.img
+    await new base(this.e).Render('help', data)
   }
 }

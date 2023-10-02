@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import Today from '../model/today.js'
+import base from "../model/base.js";
 
 export class todayMaterial extends plugin {
   constructor () {
@@ -23,7 +23,6 @@ export class todayMaterial extends plugin {
     let data = await new Today(this.e).getData()
     if (!data) return
     /** 生成图片 */
-    let img = await puppeteer.screenshot('todayMaterial', data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render('todayMaterial', data)
   }
 }

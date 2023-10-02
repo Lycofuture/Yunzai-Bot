@@ -1,9 +1,9 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import fs from 'node:fs'
 import GachaLog from '../model/gachaLog.js'
 import ExportLog from '../model/exportLog.js'
 import LogCount from '../model/logCount.js'
+import base from "../model/base.js";
 
 const _path = process.cwd() + '/plugins/genshin'
 
@@ -99,8 +99,7 @@ export class gcLog extends plugin {
     let data = await new GachaLog(this.e).logUrl()
     if (!data) return
     let url = this.srHead('gachaLog', data)
-    let img = await puppeteer.screenshot(url, data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render(url, data)
   }
 
   /** 发送output_log.txt日志文件 */
@@ -122,8 +121,7 @@ export class gcLog extends plugin {
 
     if (typeof data != 'object') return
     let url = this.srHead('gachaLog', data)
-    let img = await puppeteer.screenshot(url, data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render(url, data)
   }
 
   /** #抽卡记录 */
@@ -131,8 +129,7 @@ export class gcLog extends plugin {
     let data = await new GachaLog(this.e).getLogData()
     if (!data) return
     let url = this.srHead('gachaLog', data)
-    let img = await puppeteer.screenshot(url, data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render(url, data)
   }
 
   /** 导出记录 */
@@ -213,7 +210,6 @@ export class gcLog extends plugin {
     let data = await new LogCount(this.e).count()
     if (!data) return
     let url = this.srHead('logCount', data)
-    let img = await puppeteer.screenshot(url, data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render(url, data)
   }
 }

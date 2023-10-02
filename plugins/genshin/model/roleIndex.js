@@ -27,7 +27,7 @@ export default class RoleIndex extends base {
 		
 		this.areaName = lodash.invert(this.area)
 		
-		this.headIndexStyle = `<style> .head_box { background: url(${this.screenData.pluResPath}img/roleIndex/namecard/${lodash.random(1, 8)}.png) #f5f5f5; background-position-x: 30px; background-repeat: no-repeat; border-radius: 15px; font-family: tttgbnumber; padding: 10px 20px; position: relative; background-size: auto 101%; }</style>`
+		this.headIndexStyle = `<style> .head_box { background: #f5f5f5 url(${this.screenData.pluResPath}img/roleIndex/namecard/${lodash.random(1, 8)}.png) no-repeat; background-position-x: 30px;  border-radius: 15px; font-family: tttgbnumber,serif; padding: 10px 20px; position: relative; background-size: auto 101%; }</style>`
 	}
 	
 	static async get(e) {
@@ -48,14 +48,12 @@ export default class RoleIndex extends base {
 		
 		let ret = []
 		res.forEach(v => ret.push(v.data))
-		
 		/** 截图数据 */
-		let data = {
+		return {
 			quality: 80,
 			...this.screenData,
 			...this.dealData(ret)
 		}
-		return data
 	}
 	
 	dealData(data) {
@@ -495,7 +493,6 @@ export default class RoleIndex extends base {
 					text: `${val.offerings[0].level}级`
 				})
 			}
-			
 			explor.push(tmp)
 		}
 		return {
@@ -505,8 +502,8 @@ export default class RoleIndex extends base {
 			line,
 			home,
 			explor,
-			headIndexStyle: this.headIndexStyle,
-			...this.screenData
+			...this.screenData,
+			headIndexStyle: this.headIndexStyle
 		}
 	}
 	

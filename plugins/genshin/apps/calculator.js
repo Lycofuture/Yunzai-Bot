@@ -1,8 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import Calculator from '../model/calculator.js'
 import Blueprint from '../model/blueprint.js'
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import gsCfg from '../model/gsCfg.js'
+import base from "../model/base.js";
 
 export class calculator extends plugin {
   constructor () {
@@ -48,8 +48,7 @@ export class calculator extends plugin {
 	  if (!data) return
 	  
 	  /** 生成图片 */
-	  let img = await puppeteer.screenshot('Blueprint', data)
-	  if (img) await this.reply(img)
+	  await new base(this.e).Render('Blueprint', data)
   }
   /** #刻晴养成 */
   async Calculator () {
@@ -65,7 +64,6 @@ export class calculator extends plugin {
     if (!data) return
 
     /** 生成图片 */
-    let img = await puppeteer.screenshot('Calculator', data)
-    if (img) await this.reply(img)
+    await new base(this.e).Render('Calculator', data)
   }
 }

@@ -200,7 +200,6 @@ export class strategy extends plugin {
     if (!response.ok) {
       return false
     }
-    const res = await response.json()
-    return res
+    return await response.json()
   }
 }
