@@ -74,7 +74,7 @@ body {
 }
 
 .uid {
-    font-family: tttgbnumber;
+    font-family: tttgbnumber, serif;
 }
 
 .uid:before {
@@ -92,7 +92,6 @@ body {
     border-radius: 15px;
     margin-top: 20px;
     margin-bottom: 20px;
-    padding: 10px 15px 0px 15px;
     background: #fff;
     box-shadow: 0 5px 10px 0 rgb(0 0 0 / 15%);
     padding: 20px 15px 5px 15px;
@@ -107,7 +106,7 @@ body {
     color: #fff;
     font-size: 14px;
     padding: 3px 10px;
-    border-radius: 15px 0px 15px 15px;
+    border-radius: 15px 0 15px 15px;
     z-index: 20;
 }
 
@@ -124,12 +123,12 @@ body {
 }
 
 .num {
-    font-family: tttgbnumber;
+    font-family: tttgbnumber, serif;
     font-size: 24px;
 }
 
 .explor_box .num {
-    font-family: tttgbnumber;
+    font-family: tttgbnumber, serif;
     font-size: 16px;
 }
 
@@ -222,20 +221,90 @@ body {
     display: none;
 }
 
+/*尘歌壶*/
+.kettle_box {
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 25px 5px 0 2px;
+    background: #f5f5f5;
+    box-shadow: 0 5px 10px 0 rgb(0 0 0 / 15%);
+    position: relative;
+}
+
+.kettle_box .item {
+    margin: 0 0 10px 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    contain: content;
+}
+
+.kettle_box .hu_background {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    line-height: 50px;
+    position: absolute;
+    justify-content: center;
+    align-content: center;
+    background: rgba(0, 0, 0, .6);
+    color: #ececec;
+    text-indent: 20px;
+    width: 100%;
+    bottom: 20%;
+    font-size: 14px;
+    font-family: tttgbnumber, serif;
+}
+
+.kettle_box .hu_name {
+    position: absolute;
+    font-family: tttgbnumber, serif;
+    top: 20px;
+    right: 20px;
+}
+
+.kettle_box .hu_icon {
+    position: absolute;
+    top: 10px;
+    margin-left: 10px;
+    height: 50px;
+    width: 50px;
+}
+
+.kettle_box .hu_title {
+    font-size: 15px;
+    margin-left: 65px;
+    position: absolute;
+    top: 25px;
+}
+
+.kettle_box .hu_lable {
+    text-align: center;
+}
+
+.kettle_box .hu_num {
+    font-family: tttgbnumber, serif;
+    text-align: center;
+    font-size: 18px;
+    margin-top: -20px;
+}
+
+/*我的角色*/
 .avatars_box {
     display: flex;
     flex-wrap: wrap;
     border-radius: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
-    padding: 25px 5px 0px 2px;
+    padding: 25px 5px 0 2px;
     background: #f5f5f5;
     box-shadow: 0 5px 10px 0 rgb(0 0 0 / 15%);
     position: relative;
 }
 
 .avatars_box .item {
-    margin: 0px 0 10px 10px;
+    margin: 0 1px 10px 10px;
     border-radius: 7px;
     overflow: hidden;
     box-shadow: 0 2px 6px 0 rgb(132 93 90 / 30%);
@@ -288,8 +357,8 @@ body {
 
 .role_box .life {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
     z-index: 9;
     font-size: 16px;
     text-align: center;
@@ -337,6 +406,8 @@ body {
     font-size: 14px;
     font-family: tttgbnumber, serif;
 }
+
+/*logo*/
 .logo {
     font-size: 12px;
     font-family: "tttgbnumber", serif;

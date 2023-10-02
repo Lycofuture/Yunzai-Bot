@@ -220,8 +220,6 @@ export default class MysSign extends base {
       logger.mark(`[原神签到成功]${this.log} 第${this.ckNum}个`)
       return true
     }
-
-    logger.mark(`[原神签到失败]${this.log}：${sign.message} 第${this.ckNum}个`)
     return false
   }
 

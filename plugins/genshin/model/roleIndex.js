@@ -391,7 +391,8 @@ export default class RoleIndex extends base {
 	roleExploreData(res) {
 		let stats = res.stats
 		let line = [
-			[ { lable: '等级', num: res.role.level ?? 0 },
+			[
+				// { lable: '等级', num: res.role.level ?? 0 },
 				{ lable: '活跃天数', num: stats.active_day_number },
 				{ lable: '深境螺旋', num: stats.spiral_abyss },
 				{ lable: '解锁传送点', num: stats.way_point_number },
@@ -436,6 +437,8 @@ export default class RoleIndex extends base {
 			let tmp = {
 				name: val.name,
 				icon: val.icon,
+				cl_name: val.comfort_level_name,
+				cl_icon: val.comfort_level_icon,
 				line: [
 					{ lable: '家园等级', num: val.level },
 					{ lable: '最高仙力', num: val.comfort_num },
@@ -444,6 +447,10 @@ export default class RoleIndex extends base {
 				]
 			}
 			home.push(tmp)
+		}
+		for (let i in res.avatars) {
+			if (res.avatars[i].id === 10000005) res.avatars[i].name = '空'
+			if (res.avatars[i].id === 10000007) res.avatars[i].name = '荧'
 		}
 		const explor = []
 		for (let val of res.world_explorations) {
