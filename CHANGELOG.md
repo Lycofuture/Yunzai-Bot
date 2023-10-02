@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.0.1...v3.0.2) (2023-10-02)
+
+
+### 修复 BUG
+
+* 删除日志 ([0c862f3](https://github.com/Lycofuture/Yunzai-Bot/commit/0c862f3a280a212a4fd5342a5f1d2afe924c8a0a))
+
 ## [3.0.1](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.0.0...v3.0.1) (2023-10-02)
 
 
