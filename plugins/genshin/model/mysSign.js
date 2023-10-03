@@ -196,7 +196,7 @@ export default class MysSign extends base {
     this.signMsg = sign?.message ?? 'Too Many Requests'
 
     if (!sign) {
-      logger.mark(`[原神签到失败]${this.log}：${sign.message || this.signMsg}`)
+      logger.mark(`[原神签到失败]${this.log}：${this.signMsg}`)
       return false
     }
 
@@ -209,7 +209,6 @@ export default class MysSign extends base {
 
     if (sign.data && sign.data.risk_code === 375) {
       this.signMsg = '验证码失败'
-      sign.message = '验证码失败'
       this.is_verify = true
 
       logger.mark(`[原神签到失败]${this.log}：${sign.message} 第${this.ckNum}个`)

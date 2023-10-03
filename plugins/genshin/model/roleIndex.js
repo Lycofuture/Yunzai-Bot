@@ -43,7 +43,6 @@ export default class RoleIndex extends base {
 			basicInfo: ''
 		}
 		let res = await MysInfo.get(this.e, ApiData)
-		
 		if (!res || res[0].retcode !== 0 || res[2].retcode !== 0) return false
 		
 		let ret = []
@@ -388,7 +387,7 @@ export default class RoleIndex extends base {
 		return this.roleExploreData(res.data)
 	}
 	
-	roleExploreData(res) {
+	async roleExploreData(res) {
 		let stats = res.stats
 		let line = [
 			[
@@ -396,58 +395,61 @@ export default class RoleIndex extends base {
 				{ lable: '活跃天数', num: stats.active_day_number },
 				{ lable: '深境螺旋', num: stats.spiral_abyss },
 				{ lable: '解锁传送点', num: stats.way_point_number },
+				{ lable: '解锁秘境', num: stats.domain_number },
+				{ lable: '达成成就', num: stats.achievement_number }
 			],
 			[
-				{ lable: '解锁秘境', num: stats.domain_number },
-				{ lable: '达成成就', num: stats.achievement_number },
 				{ lable: '获得角色', num: stats.avatar_number },
 				{
 					lable: '总宝箱',
 					num: stats.luxurious_chest_number + stats.precious_chest_number + stats.exquisite_chest_number + stats.common_chest_number + stats.magic_chest_number
-				}
-			],
-			[
+				},
 				{ lable: '华丽宝箱', num: stats.luxurious_chest_number },
 				{ lable: '珍贵宝箱', num: stats.precious_chest_number },
-				{ lable: '精致宝箱', num: stats.exquisite_chest_number },
-				{ lable: '普通宝箱', num: stats.common_chest_number },
-				{ lable: '奇馈宝箱', num: stats.magic_chest_number }
+				{ lable: '精致宝箱', num: stats.exquisite_chest_number }
 			],
 			[
+				{ lable: '普通宝箱', num: stats.common_chest_number },
+				{ lable: '奇馈宝箱', num: stats.magic_chest_number },
 				{ lable: '草神瞳', num: stats.dendroculus_number },
 				{ lable: '雷神瞳', num: stats.electroculus_number },
-				{ lable: '岩神瞳', num: stats.geoculus_number },
+				{ lable: '岩神瞳', num: stats.geoculus_number }
+			],
+			[
 				{ lable: '风神瞳', num: stats.anemoculus_number },
-				{ lable: '水神瞳', num: stats.hydroculus_number }
+				{ lable: '水神瞳', num: stats.hydroculus_number },
+				{ lable: '火神瞳', num: '待实装' },
+				{ lable: '冰神瞳', num: '待实装' }
 			]
 		]
 		// 尘歌壶
-		if (res.homes && res.homes.length > 0) {
+		const home = []
+		// for (let i in res.homes) {
+		const i = Math.floor(Math.random() * res.homes.length)
+		let tmp = {
+			name: res.homes[i].name,
+			icon: res.homes[i].icon,
+			cl_name: res.homes[i].comfort_level_name,
+			cl_icon: res.homes[i].comfort_level_icon,
+			line: [
+				{ lable: '家园等级', num: res.homes[i].level },
+				{ lable: '最高仙力', num: res.homes[i].comfort_num },
+				{ lable: '获得摆设', num: res.homes[i].item_num },
+				{ lable: '历史访客', num: res.homes[i].visit_num }
+			]
+		}
+		home.push(tmp)
+		// }
+		/*if (res.homes && res.homes.length > 0) {
 			line.push([
 				{ lable: '家园等级', num: res.homes[0].level },
 				{ lable: '最高仙力', num: res.homes[0].comfort_num },
 				{ lable: '获得摆设', num: res.homes[0].item_num },
 				{ lable: '历史访客', num: res.homes[0].visit_num }
 			])
-		}
+		}*/
 		
 		res.world_explorations = lodash.orderBy(res.world_explorations, [ 'id' ], [ 'desc' ])
-		const home = []
-		for (let val of res.homes) {
-			let tmp = {
-				name: val.name,
-				icon: val.icon,
-				cl_name: val.comfort_level_name,
-				cl_icon: val.comfort_level_icon,
-				line: [
-					{ lable: '家园等级', num: val.level },
-					{ lable: '最高仙力', num: val.comfort_num },
-					{ lable: '获得摆设', num: val.item_num },
-					{ lable: '历史访客', num: val.visit_num }
-				]
-			}
-			home.push(tmp)
-		}
 		for (let i in res.avatars) {
 			if (res.avatars[i].id === 10000005) res.avatars[i].name = '空'
 			if (res.avatars[i].id === 10000007) res.avatars[i].name = '荧'
@@ -522,6 +524,7 @@ export default class RoleIndex extends base {
 			line,
 			home,
 			explor,
+			basicInfo: (await this.getIndex()).basicInfo,
 			...this.screenData,
 			headIndexStyle: this.headIndexStyle
 		}

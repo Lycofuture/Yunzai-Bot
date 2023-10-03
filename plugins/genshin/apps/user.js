@@ -16,10 +16,6 @@ export class user extends plugin {
           fnc: 'ckHelp'
         },
         {
-          reg: '^(ck|cookie|js)代码$',
-          fnc: 'ckCode'
-        },
-        {
           reg: '^#绑定(cookie|ck)$',
           fnc: 'bingCk'
         },
@@ -102,15 +98,9 @@ export class user extends plugin {
     this.reply('绑定cookie失败\n请先【登录米游社】或【登录通行证】再获取cookie')
   }
 
-  /** #ck代码 */
-  async ckCode () {
-    await this.reply('javascript:(()=>{prompt(\'\',document.cookie)})();')
-  }
-
   /** ck帮助 */
   async ckHelp () {
-    let set = gsCfg.getConfig('mys', 'set')
-    await this.reply(`Cookie绑定配置教程：${set.cookieDoc}\n获取cookie后【私聊发送】进行绑定`)
+	  await this.reply(`请发送【#扫码登录】进行绑定`)
   }
 
   /** 绑定ck */
@@ -118,10 +108,9 @@ export class user extends plugin {
     let set = gsCfg.getConfig('mys', 'set')
 
     if (!this.e.ck) {
-      await this.reply(`请【私聊】发送米游社cookie，获取教程：\n${set.cookieDoc}`)
+	    await this.reply(`请发送【#扫码登录】进行绑定，或者【私聊】发送米游社cookie`)
       return
     }
-
     await this.User.bing()
   }
 
@@ -157,7 +146,7 @@ export class user extends plugin {
 
   /** 加载旧的绑定ck json */
   loadOldData () {
-    this.User.loadOldData()
+	  this.User.loadOldData().then()
   }
 
   /** 检查用户CK状态 **/

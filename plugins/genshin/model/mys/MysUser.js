@@ -164,59 +164,27 @@ export default class MysUser extends BaseModel {
     return true
   }
 
-  // 初始化当前MysUser缓存记录
-  async initCache (user) {
-    if (!this.ltuid || !this.servCache || !this.ck) {
-      return
-    }
-
-    // 为当前MysUser添加uid查询记录
-    if (!lodash.isEmpty(this.uids)) {
-      for (let uid of this.uids) {
-        if (uid !== 'pub') {
-          await this.addQueryUid(uid)
-          // 添加ltuid-uid记录，用于判定ltuid绑定个数及自ltuid查询
-          await this.cache.zAdd(tables.uid, this.ltuid, uid)
+  /**
+   * 删除失效用户
+   * @returns {Promise<number>} 删除用户的个数
+   */
+  static async delDisable () {
+    let count = 0
+    await MysUser.eachServ(async function (servCache) {
+      let cks = await servCache.zGetDisableKey(tables.detail)
+      console.info('cks', cks)
+      for (let ck of cks) {
+        if (await servCache.zDel(tables.detail, ck, true)) {
+          count++
+        }
+        let ckUser = await MysUser.create(ck)
+        console.info('ckUser', ck, ckUser)
+        if (ckUser) {
+          await ckUser.delWithUser()
         }
       }
-    } else {
-      console.log(`ltuid:${this.ltuid}暂无uid信息，请检查...`)
-      // 公共ck暂无uid信息不添加
-      if (user?.qq === 'pub') {
-        return false
-      }
-    }
-    // 缓存ckData，供后续缓存使用
-    // ltuid关系存储到与server无关的cache中，方便后续检索
-    if (this.ckData && this.ckData.ck) {
-      await this.cache.kSet(tables.ck, this.ltuid, this.ckData)
-    }
-
-    // 缓存qq，用于删除ltuid时查找
-    if (user && user.qq) {
-      let qq = user.qq === 'pub' ? 'pub' : user.qq * 1
-      let qqArr = await this.cache.kGet(tables.qq, this.ltuid, true)
-      if (!lodash.isArray(qqArr)) {
-        qqArr = []
-      }
-      if (!qqArr.includes(qq)) {
-        qqArr.push(qq)
-        await this.cache.kSet(tables.qq, this.ltuid, qqArr)
-      }
-    }
-
-    // 从删除记录中查找并恢复查询记录
-    let cacheSearchList = await this.servCache.get(tables.del, this.ltuid, true)
-    // 这里不直接插入，只插入当前查询记录中没有的值
-    if (cacheSearchList && cacheSearchList.length > 0) {
-      for (let searchedUid of cacheSearchList) {
-        // 检查对应uid是否有新的查询记录
-        if (!await this.getQueryLtuid(searchedUid)) {
-          await this.addQueryUid(searchedUid)
-        }
-      }
-    }
-    return true
+    })
+    return count
   }
 
   static async eachServ (fn) {
@@ -350,27 +318,59 @@ export default class MysUser extends BaseModel {
     return ret
   }
 
-  /**
-   * 删除失效用户
-   * @returns {Promise<number>} 删除用户的个数
-   */
-  static async delDisable () {
-    let count = 0
-    await MysUser.eachServ(async function (servCache) {
-      let cks = await servCache.zGetDisableKey(tables.detail)
-      console.log('cks', cks)
-      for (let ck of cks) {
-        if (await servCache.zDel(tables.detail, ck, true)) {
-          count++
-        }
-        let ckUser = await MysUser.create(ck)
-        console.log('ckUser', ck, ckUser)
-        if (ckUser) {
-          await ckUser.delWithUser()
+  // 初始化当前MysUser缓存记录
+  async initCache (user) {
+    if (!this.ltuid || !this.servCache || !this.ck) {
+      return
+    }
+
+    // 为当前MysUser添加uid查询记录
+    if (!lodash.isEmpty(this.uids)) {
+      for (let uid of this.uids) {
+        if (uid !== 'pub') {
+          await this.addQueryUid(uid)
+          // 添加ltuid-uid记录，用于判定ltuid绑定个数及自ltuid查询
+          await this.cache.zAdd(tables.uid, this.ltuid, uid)
         }
       }
-    })
-    return count
+    } else {
+      console.info(`ltuid:${this.ltuid}暂无uid信息，请检查...`)
+      // 公共ck暂无uid信息不添加
+      if (user?.qq === 'pub') {
+        return false
+      }
+    }
+    // 缓存ckData，供后续缓存使用
+    // ltuid关系存储到与server无关的cache中，方便后续检索
+    if (this.ckData && this.ckData.ck) {
+      await this.cache.kSet(tables.ck, this.ltuid, this.ckData)
+    }
+
+    // 缓存qq，用于删除ltuid时查找
+    if (user && user.qq) {
+      let qq = user.qq === 'pub' ? 'pub' : user.qq * 1
+      let qqArr = await this.cache.kGet(tables.qq, this.ltuid, true)
+      if (!lodash.isArray(qqArr)) {
+        qqArr = []
+      }
+      if (!qqArr.includes(qq)) {
+        qqArr.push(qq)
+        await this.cache.kSet(tables.qq, this.ltuid, qqArr)
+      }
+    }
+
+    // 从删除记录中查找并恢复查询记录
+    let cacheSearchList = await this.servCache.get(tables.del, this.ltuid, true)
+    // 这里不直接插入，只插入当前查询记录中没有的值
+    if (cacheSearchList && cacheSearchList.length > 0) {
+      for (let searchedUid of cacheSearchList) {
+        // 检查对应uid是否有新的查询记录
+        if (!await this.getQueryLtuid(searchedUid)) {
+          await this.addQueryUid(searchedUid)
+        }
+      }
+    }
+    return true
   }
 
   static async getGameRole (ck, serv = 'mys') {

@@ -68,6 +68,30 @@
         </div>
         {{/each}}
     </div>
+    {{if basicInfo.level>0}}
+    <div class="basicInfo">
+        <div class="tab_lable">七圣召唤</div>
+        <div class="basicInfo_header">
+            <div class="basicInfo_icon"><span>{{basicInfo.level}}</span></div>
+            <div class="basicInfo_right">
+                <div class="item">
+                    <div>已收集角色牌</div>
+                    <div>{{basicInfo.avatar_card_num_gained}}/{{basicInfo.avatar_card_num_total}}</div>
+                </div>
+                <div class="item">
+                    <div>已收集行动牌</div>
+                    <div>{{basicInfo.action_card_num_gained}}/{{basicInfo.action_card_num_total}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="basicInfo_covers">
+            {{each basicInfo.covers val}}
+            <div><img alt="" src="{{val.image}}"></div>
+            {{/each}}
+        </div>
+
+    </div>
+    {{/if}}
     {{if avatars.length>0}}
     <div class="avatars_box">
         <div class="tab_lable">我的角色</div>
