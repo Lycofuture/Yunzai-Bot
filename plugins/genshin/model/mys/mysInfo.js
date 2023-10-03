@@ -236,19 +236,19 @@ export default class MysInfo {
 	 */
 	static async initUserCk() {
 		// 初始化用户缓存
-		const userCount = await Promise.all(NoteUser.map(user => {
+		const userCount = await NoteUser.forEach(user => {
 			return user.initCache(true);
-		}));
+		}) || 0;
 		logger.mark(`加载用户UID：${userCount}个，加入查询池`)
 	}
 	
 	/**
-   * 初始化缓存
-   * @param force 若已经初始化是否强制初始化
-   * @param clearData 强制初始化时是否清除已有数据 (刷新/重置)
+	 * 初始化缓存
+	 * @param force 若已经初始化是否强制初始化
+	 * @param clearData 强制初始化时是否清除已有数据 (刷新/重置)
 	 * @param uid
-   * @returns {Promise<boolean>}
-   */
+	 * @returns {Promise<boolean>}
+	 */
 	static async initCache(force = false, clearData = false, uid = this.uid) {
 		// 检查缓存标记
 		let cache = DailyCache.create(uid)
