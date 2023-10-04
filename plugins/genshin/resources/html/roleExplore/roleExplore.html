@@ -105,6 +105,19 @@
                 <img alt="" class="role_img" src="{{pluResPath}}img/role/{{val.name}}.png"/>
                 <div class="desc">Lv.{{val.level}} ❤{{val.fetter}}</div>
             </div>
+            <div class="text_box">
+                <div class="weapon_box">
+                    <div class="weapon_boder">
+                        <img alt="" class="weapon_img" src="{{pluResPath}}img/weapon/{{val.weapon.name}}.png"/>
+                    </div>
+                </div>
+                <div class="weapon_name_box">
+                    <div class="weapon_name">{{val.weapon.showName}}</div>
+                    <div class="weapon_level">
+                        Lv.{{val.weapon.level}}{{ if val.weapon.affix_level>1}}<span class="weapon_affix">{{val.weapon.affix_level}}</span>{{/if}}
+                    </div>
+                </div>
+            </div>
         </div>
         {{/each}}
     </div>
