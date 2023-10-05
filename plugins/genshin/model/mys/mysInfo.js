@@ -236,9 +236,10 @@ export default class MysInfo {
 	 */
 	static async initUserCk() {
 		// 初始化用户缓存
-		const userCount = await NoteUser.forEach(user => {
-			return user.initCache(true);
-		}) || 0;
+		let userCount = 0
+		await NoteUser.forEach(await async function (user) {
+			userCount += await user.initCache(true)
+		})
 		logger.mark(`加载用户UID：${userCount}个，加入查询池`)
 	}
 	
