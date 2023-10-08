@@ -173,9 +173,8 @@ export default class MysInfo {
 		
 		if (!mysInfo.uid || !mysInfo.ckInfo.ck) return false
 		e.uid = mysInfo.uid
-		let mysApi = new MysApi(mysInfo.uid, mysInfo.ckInfo.ck, option, e.isSr, e.user.ckData[e.uid].device_id)
-		// let mysApi = new MysApi(mysInfo.uid, mysInfo.ckInfo.ck, option, e.isSr)
-		
+		let mysApi = new MysApi(mysInfo.uid, mysInfo.ckInfo.ck, option, e.isSr, e.user.ckData[e.uid]?.device_id)
+
 		let res
 		if (lodash.isObject(api)) {
 			let all = []
