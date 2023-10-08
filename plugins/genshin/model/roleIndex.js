@@ -32,10 +32,12 @@ export default class RoleIndex extends base {
 
     static async get(e) {
         let roleIndex = new RoleIndex(e)
-        return await roleIndex.getIndex()
+        let res = await roleIndex.ApiData()
+        if (!res || res[0].retcode !== 0) return false
+        return await roleIndex.roleData(res)
     }
 
-    async getIndex() {
+    async ApiData() {
         let ApiData = {
             index: '',
             spiralAbyss: {schedule_type: 1},
@@ -44,151 +46,14 @@ export default class RoleIndex extends base {
         }
         let res = await MysInfo.get(this.e, ApiData)
         if (!res || res[0].retcode !== 0 || res[2].retcode !== 0) return false
-
-        let ret = []
-        res.forEach(v => ret.push(v.data))
         /** 截图数据 */
-        return {
-            quality: 80,
-            ...this.screenData,
-            ...this.dealData(ret),
-            res
-        }
-    }
-
-    dealData(data) {
-        let [resIndex, resAbyss, resDetail, basicInfo] = data
-
-        let avatars = resDetail.avatars || []
-        let roleArr = avatars
-
-        for (let i in avatars) {
-            let rarity = avatars[i].rarity
-            let liveNum = avatars[i].actived_constellation_num
-            let level = avatars[i].level
-            let id = avatars[i].id - 10000000
-
-            if (rarity >= 5) {
-                rarity = 5
-            }
-            // 埃洛伊排到最后
-            if (rarity > 5) {
-                id = 0
-            }
-            // 增加神里排序
-            if (avatars[i].id == 10000002) {
-                id = 50
-            }
-
-            if (avatars[i].id == 10000005) {
-                avatars[i].name = '空'
-                liveNum = 0
-                level = 0
-            } else if (avatars[i].id == 10000007) {
-                avatars[i].name = '荧'
-                liveNum = 0
-                level = 0
-            }
-            avatars[i].sortLevel = level
-            // id倒序，最新出的角色拍前面
-            avatars[i].sort = rarity * 100000 + liveNum * 10000 + level * 100 + id
-
-            avatars[i].weapon.showName = this.wother.sortName[avatars[i].weapon.name] ?? avatars[i].weapon.name
-
-            avatars[i].costumesLogo = ''
-            if (avatars[i].costumes && avatars[i].costumes.length >= 1) {
-                for (let val of avatars[i].costumes) {
-                    if (this.other.costumes.includes(val.name)) {
-                        avatars[i].costumesLogo = 2
-                        break
-                    }
-                }
-            }
-        }
-
-        let stats = resIndex.stats || {}
-        let line = [
-            [
-                {lable: '成就', num: stats.achievement_number},
-                {lable: '角色数', num: stats.avatar_number},
-                {lable: '等级', num: resIndex?.role?.level ?? 0},
-                {
-                    lable: '总宝箱',
-                    num:
-                        stats.precious_chest_number +
-                        stats.luxurious_chest_number +
-                        stats.exquisite_chest_number +
-                        stats.common_chest_number +
-                        stats.magic_chest_number
-                }
-            ],
-            [
-                {lable: '华丽宝箱', num: stats.luxurious_chest_number},
-                {lable: '珍贵宝箱', num: stats.precious_chest_number},
-                {lable: '精致宝箱', num: stats.exquisite_chest_number},
-                {lable: '普通宝箱', num: stats.common_chest_number}
-            ]
-        ]
-
-        // 尘歌壶
-        let homesLevel = 0
-        // let homesItem = 0
-        if (resIndex.homes && resIndex.homes.length > 0) {
-            homesLevel = resIndex.homes[0].level
-            // homesItem = resIndex.homes[0].item_num
-        }
-
-        let worldExplorations = lodash.keyBy(resIndex.world_explorations, 'id')
-
-        let explor = []
-        let explor2 = []
-
-        let expArr = ['须弥', '层岩巨渊', '渊下宫', '稻妻']
-        let expArr2 = ['雪山', '璃月', '蒙德']
-
-        for (let val of expArr) {
-            let tmp = {lable: val, num: `${(worldExplorations[this.area[val]]?.exploration_percentage ?? 0) / 10}%`}
-            explor.push(tmp)
-        }
-
-        for (let val of expArr2) {
-            let tmp = {lable: val, num: `${(worldExplorations[this.area[val]]?.exploration_percentage ?? 0) / 10}%`}
-            explor2.push(tmp)
-        }
-
-        explor2.push({lable: '家园等级', num: homesLevel})
-
-        line.push(explor)
-        line.push(explor2)
-
-        if (avatars.length > 0) {
-            // 重新排序
-            avatars = lodash.chain(avatars).orderBy(['sortLevel'], ['desc'])
-            if (this.e.msg.includes('角色')) {
-                avatars = avatars.slice(0, 12)
-            }
-            avatars = avatars.orderBy(['sort'], ['desc']).value()
-        }
-
-        // 深渊
-        let abyss = this.abyssAll(roleArr, resAbyss)
-
-        return {
-            uid: this.e.uid,
-            saveId: this.e.uid,
-            activeDay: this.dayCount(stats.active_day_number),
-            line,
-            basicInfo,
-            avatars,
-            abyss,
-            headIndexStyle: this.headIndexStyle
-        }
+        return res
     }
 
     // 处理深渊数据
     abyssAll(roleArr, resAbyss) {
         let abyss = {}
-
+        if (!resAbyss?.reveal_rank) return false
         if (roleArr.length <= 0) {
             return abyss
         }
@@ -273,13 +138,14 @@ export default class RoleIndex extends base {
         }
     }
 
+    // 计算活跃天数
     dayCount(num) {
-        let year = Math.floor(num / 365)
+        let yea = Math.floor(num / 365)
         let month = Math.floor((num % 365) / 30.41)
         let day = Math.floor((num % 365) % 30.41)
         let msg = ''
-        if (year > 0) {
-            msg += year + '年'
+        if (yea > 0) {
+            msg += yea + '年'
         }
         if (month > 0) {
             msg += month + '个月'
@@ -296,102 +162,51 @@ export default class RoleIndex extends base {
 
         if (!res || res.retcode !== 0) return false
 
-        return this.roleCardData(res.data)
-    }
-
-    roleCardData(res) {
-        this.initFile()
-
-        let stats = res.stats
-        let line = [
-            [
-                {lable: '活跃天数', num: stats.active_day_number},
-                {lable: '成就', num: stats.achievement_number},
-                {lable: '角色数', num: stats.avatar_number},
-                {lable: '等级', num: res?.role?.level ?? 0},
-                {
-                    lable: '总宝箱',
-                    num:
-                        stats.precious_chest_number +
-                        stats.luxurious_chest_number +
-                        stats.exquisite_chest_number +
-                        stats.common_chest_number +
-                        stats.magic_chest_number
-                }
-            ],
-            [
-                {lable: '华丽宝箱', num: stats.luxurious_chest_number},
-                {lable: '珍贵宝箱', num: stats.precious_chest_number},
-                {lable: '精致宝箱', num: stats.exquisite_chest_number},
-                {lable: '普通宝箱', num: stats.common_chest_number},
-                {lable: '奇馈宝箱', num: stats.magic_chest_number}
-            ]
-        ]
-
-        let explor1 = []
-        let explor2 = []
-
-        res.world_explorations = lodash.orderBy(res.world_explorations, ['id'], ['desc'])
-
-        for (let val of res.world_explorations) {
-            val.name = this.areaName[val.id] ? this.areaName[val.id] : lodash.truncate(val.name, {length: 6})
-
-            let tmp = {lable: val.name, num: `${val.exploration_percentage / 10}%`}
-
-            if (explor1.length < 5) {
-                explor1.push(tmp)
-            } else {
-                explor2.push(tmp)
-            }
-        }
-
-        explor2 = explor2.concat([
-            {lable: '雷神瞳', num: stats.electroculus_number},
-            {lable: '岩神瞳', num: stats.geoculus_number},
-            {lable: '风神瞳', num: stats.anemoculus_number}
-        ])
-
-        line.push(explor1)
-        line.push(explor2.slice(0, 5))
-
-        let avatars = res.avatars
-        avatars = avatars.slice(0, 8)
-
-        let element = gsCfg.getdefSet('element', 'role')
-        for (let i in avatars) {
-            if (avatars[i].id == 10000005) {
-                avatars[i].name = '空'
-            }
-            if (avatars[i].id == 10000007) {
-                avatars[i].name = '荧'
-            }
-            avatars[i].element = element[avatars[i].name]
-            avatars[i].img = imgFile[avatars[i].name] || `${avatars[i].name}.png`
-        }
-
-        return {
-            saveId: this.e.uid,
-            uid: this.e.uid,
-            name: this.e.sender.card.replace(this.e.uid, '').trim(),
-            user_id: this.e.user_id,
-            line,
-            avatars,
-            bg: lodash.random(1, 3),
-            ...this.screenData
-        }
+        return this.roleData(res)
     }
 
     async roleExplore() {
         this.model = 'roleExplore'
-        // let res = await MysInfo.get(this.e, 'index')
-        const res = await this.getIndex()
-        if (!res || res.res[0].retcode !== 0) return false
-        return this.roleExploreData(res)
+        const res = await this.ApiData()
+
+        if (!res || res[0].retcode !== 0) return false
+        return this.roleData(res)
     }
 
-    async roleExploreData(res) {
-        const ver = res.res[0].data
-        let stats = ver.stats
+    async roleData(res) {
+        // 头像部分
+        let role, avatars, stats, world_explorations, homes, basicInfo, array
+        if (Array.isArray(res)) {
+            role = res[0].data.role
+            avatars = res[2].data.avatars
+            stats = res[0].data.stats
+            world_explorations = res[0].data.world_explorations
+            homes = res[0].data.homes
+            // 七胜召唤
+            basicInfo = res[3].data
+            array = res[1].data
+        } else {
+            role = res.data.role
+            avatars = res.data.avatars
+            stats = res.data.stats
+            world_explorations = res.data.world_explorations
+            homes = res.data.homes
+            basicInfo = res.data
+            array = res.data
+        }
+        // 角色部分
+        avatars = avatars.filter(v => v.is_chosen === true)
+        avatars = lodash.orderBy(avatars, ['rarity'], ['desc'])
+        let element = gsCfg.getdefSet('element', 'role')
+        for (let i in avatars) {
+            if (avatars[i].id === 10000005) avatars[i].name = '空'
+            if (avatars[i].id === 10000007) avatars[i].name = '荧'
+            avatars[i].element = element[avatars[i].name]
+            avatars[i].img = imgFile[avatars[i].name] || `${avatars[i].name}.png`
+            avatars[i].weapon.showName = this.wother.sortName[avatars[i].weapon.name] ?? avatars[i].weapon.name
+        }
+
+        // 详情部分
         let line = [
             [
                 // { lable: '等级', num: res.role.level ?? 0 },
@@ -425,40 +240,11 @@ export default class RoleIndex extends base {
                 {lable: '冰神瞳', num: '待实装'}
             ]
         ]
-        // 尘歌壶
-        const home = []
-        // for (let i in res.homes) {
-        const i = Math.floor(Math.random() * ver.homes.length)
-        let tmp = {
-            name: ver.homes[i].name,
-            icon: ver.homes[i].icon,
-            cl_name: ver.homes[i].comfort_level_name,
-            cl_icon: ver.homes[i].comfort_level_icon,
-            line: [
-                {lable: '家园等级', num: ver.homes[i].level},
-                {lable: '最高仙力', num: ver.homes[i].comfort_num},
-                {lable: '获得摆设', num: ver.homes[i].item_num},
-                {lable: '历史访客', num: ver.homes[i].visit_num}
-            ]
-        }
-        home.push(tmp)
-        // }
-        /*if (res.homes && res.homes.length > 0) {
-            line.push([
-                { lable: '家园等级', num: res.homes[0].level },
-                { lable: '最高仙力', num: res.homes[0].comfort_num },
-                { lable: '获得摆设', num: res.homes[0].item_num },
-                { lable: '历史访客', num: res.homes[0].visit_num }
-            ])
-        }*/
 
-        ver.world_explorations = lodash.orderBy(ver.world_explorations, ['id'], ['desc'])
-        for (let i in ver.avatars) {
-            if (ver.avatars[i].id === 10000005) ver.avatars[i].name = '空'
-            if (ver.avatars[i].id === 10000007) ver.avatars[i].name = '荧'
-        }
+        // 探索度部分
+        world_explorations = lodash.orderBy(world_explorations, ['id'], ['desc'])
         const explor = []
-        for (let val of ver.world_explorations) {
+        for (let val of world_explorations) {
             if (val.id === 7) continue
 
             val.name = this.areaName[val.id] ? this.areaName[val.id] : lodash.truncate(val.name, {length: 6})
@@ -481,7 +267,7 @@ export default class RoleIndex extends base {
             }
 
             if (val.id === 6) {
-                let underground = lodash.find(ver.world_explorations, function (o) {
+                let underground = lodash.find(world_explorations, function (o) {
                     return o.id === 7
                 })
                 if (underground) {
@@ -516,35 +302,41 @@ export default class RoleIndex extends base {
             }
             explor.push(tmp)
         }
+
+        // 尘歌壶部分
+        const home = []
+        const i = Math.floor(Math.random() * homes.length)
+        let tmp = {
+            name: homes[i].name,
+            icon: homes[i].icon,
+            cl_name: homes[i].comfort_level_name,
+            cl_icon: homes[i].comfort_level_icon,
+            line: [
+                {lable: '家园等级', num: homes[i].level},
+                {lable: '最高仙力', num: homes[i].comfort_num},
+                {lable: '获得摆设', num: homes[i].item_num},
+                {lable: '历史访客', num: homes[i].visit_num}
+            ]
+        }
+        home.push(tmp)
+
+        // 深渊
+        let abyss = this.abyssAll(avatars, array)
         return {
             saveId: this.e.uid,
             uid: this.e.uid,
-            game_head_icon: ver.role.game_head_icon,
-            nickname: ver.role.nickname,
-            level: ver.role.level,
-            region: ver.role.region,
-            avatars: res.res[2].data.avatars,
+            user_id: this.e.user_id,
+            role,
+            avatars,
             line,
             home,
             explor,
-            basicInfo: res.basicInfo,
+            basicInfo,
+            abyss,
+            activeDay:this.dayCount(stats.active_day_number),
+            bg: lodash.random(1, 3),
             ...this.screenData,
             headIndexStyle: this.headIndexStyle
         }
-    }
-
-    initFile() {
-        if (imgFile['刻晴']) return imgFile
-        let path = './plugins/genshin/resources/img/gacha/'
-        let character = fs.readdirSync(path + 'character/')
-        let weapon = fs.readdirSync(path + 'weapon/')
-
-        let nameSet = (v) => {
-            let name = v.split('.')
-            imgFile[name[0]] = v
-        }
-        character.forEach(v => nameSet(v))
-        weapon.forEach(v => nameSet(v))
-        return imgFile
     }
 }
