@@ -3,7 +3,6 @@ import MysInfo from './mys/mysInfo.js'
 import gsCfg from './gsCfg.js'
 import lodash from 'lodash'
 import moment from 'moment'
-import fs from 'node:fs'
 
 let imgFile = {}
 
@@ -34,7 +33,7 @@ export default class RoleIndex extends base {
         let roleIndex = new RoleIndex(e)
         let res = await roleIndex.ApiData()
         if (!res || res[0].retcode !== 0) return false
-        return await roleIndex.roleData(res)
+        return roleIndex.roleData(res);
     }
 
     async ApiData() {
@@ -50,7 +49,78 @@ export default class RoleIndex extends base {
         return res
     }
 
-    // 处理深渊数据
+    roleData(res) {
+        let [resIndex, resAbyss, resDetail, basicInfo] = res
+        return {
+            bg: lodash.random(1, 8),
+            uid: this.e.uid,
+            activeDay: this.dayCount(resIndex.data.stats.active_day_number),
+            avatars: this.roleList(resDetail.data.avatars),
+            line: this.Details(resIndex.data.stats),
+            basicInfo,
+            abyss: this.abyssAll(resDetail.data.avatars, resAbyss.data),
+            ...this.screenData,
+            headIndexStyle: this.headIndexStyle
+        }
+    }
+
+    async roleCard() {
+        this.model = 'roleCard'
+        let res = await MysInfo.get(this.e, 'index')
+
+        if (!res || res.retcode !== 0) return false
+
+        return this.roleCardData(res.data)
+    }
+
+    roleCardData(res) {
+        return {
+            user_id: this.e.user_id,
+            name: res.role.nickname,
+            uid: this.e.uid,
+            line: this.Details(res.stats),
+            avatars: this.roleList(res.avatars, true),
+            bg: lodash.random(1, 3),
+            ...this.screenData,
+            headIndexStyle: this.headIndexStyle
+        }
+    }
+
+    async roleExplore() {
+        this.model = 'roleExplore'
+        let ApiData = {
+            index: '',
+            basicInfo: ''
+        }
+        const res = await MysInfo.get(this.e, ApiData)
+
+        if (!res || res[0].retcode !== 0) return false
+        return this.roleExploreData(res)
+    }
+
+    roleExploreData(res) {
+        let [resIndex, basicInfo] = res
+        console.log(this.e.uid)
+        return {
+            role: resIndex.data.role,
+            uid: this.e.uid,
+            // avatars: this.roleList(character.data.avatars),
+            avatars: [],
+            line: this.Details(resIndex.data.stats),
+            home: this.DustSongPot(resIndex.data.homes),
+            explor: this.Exploration(resIndex.data.world_explorations),
+            basicInfo: basicInfo.data,
+            ...this.screenData,
+            headIndexStyle: this.headIndexStyle
+        }
+    }
+
+    /**
+     * 处理深渊数据
+     * @param roleArr
+     * @param resAbyss
+     * @returns {object}
+     */
     abyssAll(roleArr, resAbyss) {
         let abyss = {}
         if (!resAbyss?.reveal_rank) return false
@@ -138,7 +208,11 @@ export default class RoleIndex extends base {
         }
     }
 
-    // 计算活跃天数
+    /**
+     * 活跃天数格式化
+     * @param num 天数
+     * @returns {string} 年月日
+     */
     dayCount(num) {
         let yea = Math.floor(num / 365)
         let month = Math.floor((num % 365) / 30.41)
@@ -156,58 +230,34 @@ export default class RoleIndex extends base {
         return msg
     }
 
-    async roleCard() {
-        this.model = 'roleCard'
-        let res = await MysInfo.get(this.e, 'index')
-
-        if (!res || res.retcode !== 0) return false
-
-        return this.roleData(res)
-    }
-
-    async roleExplore() {
-        this.model = 'roleExplore'
-        const res = await this.ApiData()
-
-        if (!res || res[0].retcode !== 0) return false
-        return this.roleData(res)
-    }
-
-    async roleData(res) {
-        // 头像部分
-        let role, avatars, stats, world_explorations, homes, basicInfo, array
-        if (Array.isArray(res)) {
-            role = res[0].data.role
-            avatars = res[2].data.avatars
-            stats = res[0].data.stats
-            world_explorations = res[0].data.world_explorations
-            homes = res[0].data.homes
-            // 七胜召唤
-            basicInfo = res[3].data
-            array = res[1].data
-        } else {
-            role = res.data.role
-            avatars = res.data.avatars
-            stats = res.data.stats
-            world_explorations = res.data.world_explorations
-            homes = res.data.homes
-            basicInfo = res.data
-            array = res.data
-        }
-        // 角色部分
-        avatars = avatars.filter(v => v.is_chosen === true)
+    /**
+     * 角色列表
+     * @param avatars
+     * @param chosen 是否只要展示角色
+     * @returns {any[]}
+     */
+    roleList(avatars, chosen = false) {
         avatars = lodash.orderBy(avatars, ['rarity'], ['desc'])
+        if (chosen) avatars = avatars.slice(0, 8)
         let element = gsCfg.getdefSet('element', 'role')
         for (let i in avatars) {
             if (avatars[i].id === 10000005) avatars[i].name = '空'
             if (avatars[i].id === 10000007) avatars[i].name = '荧'
             avatars[i].element = element[avatars[i].name]
             avatars[i].img = imgFile[avatars[i].name] || `${avatars[i].name}.png`
-            avatars[i].weapon.showName = this.wother.sortName[avatars[i].weapon.name] ?? avatars[i].weapon.name
+            if (avatars[i].weapon) avatars[i].weapon.showName = this.wother.sortName[avatars[i].weapon.name] ?? avatars[i].weapon.name
         }
+        return avatars
+    }
 
-        // 详情部分
-        let line = [
+    /**
+     * 详情部分
+     * @param stats
+     * @returns {([{num: *, lable: string},{num: *, lable: string},{num: *, lable: string},{num: *, lable: string},{num: *, lable: string}]|[{num: *, lable: string},{num: *, lable: string},{num: *, lable: string},{num: *, lable: string},{num: *, lable: string}]|[{num: *, lable: string},{num: *, lable: string},{num: *, lable: string},{num: *, lable: string},{num: *, lable: string}]|[{num: *, lable: string},{num: *, lable: string},{num: string, lable: string},{num: string, lable: string}])[]}
+     * @constructor
+     */
+    Details(stats) {
+        return [
             [
                 // { lable: '等级', num: res.role.level ?? 0 },
                 {lable: '活跃天数', num: stats.active_day_number},
@@ -240,8 +290,15 @@ export default class RoleIndex extends base {
                 {lable: '冰神瞳', num: '待实装'}
             ]
         ]
+    }
 
-        // 探索度部分
+    /**
+     * 探索度部分
+     * @param world_explorations
+     * @returns {*[]}
+     * @constructor
+     */
+    Exploration(world_explorations) {
         world_explorations = lodash.orderBy(world_explorations, ['id'], ['desc'])
         const explor = []
         for (let val of world_explorations) {
@@ -302,8 +359,16 @@ export default class RoleIndex extends base {
             }
             explor.push(tmp)
         }
+        return explor
+    }
 
-        // 尘歌壶部分
+    /**
+     * 尘歌壶部分
+     * @param homes
+     * @returns {*[]}
+     * @constructor
+     */
+    DustSongPot(homes) {
         const home = []
         const i = Math.floor(Math.random() * homes.length)
         let tmp = {
@@ -319,24 +384,6 @@ export default class RoleIndex extends base {
             ]
         }
         home.push(tmp)
-
-        // 深渊
-        let abyss = this.abyssAll(avatars, array)
-        return {
-            saveId: this.e.uid,
-            uid: this.e.uid,
-            user_id: this.e.user_id,
-            role,
-            avatars,
-            line,
-            home,
-            explor,
-            basicInfo,
-            abyss,
-            activeDay:this.dayCount(stats.active_day_number),
-            bg: lodash.random(1, 3),
-            ...this.screenData,
-            headIndexStyle: this.headIndexStyle
-        }
+        return home
     }
 }
