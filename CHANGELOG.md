@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.0.2...v3.1.0) (2023-10-08)
+
+
+### 新增功能
+
+* :sparkles: 修复原神功能1034问题 ([c675890](https://github.com/Lycofuture/Yunzai-Bot/commit/c675890a49debd5e56a533433470861d19f4e208))
+
 ## [3.0.2](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.0.1...v3.0.2) (2023-10-02)
 
 
