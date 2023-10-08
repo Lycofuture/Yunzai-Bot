@@ -3,6 +3,7 @@ import lodash from 'lodash'
 import fetch from 'node-fetch'
 import cfg from '../../../../lib/config/config.js'
 import apiTool from './apiTool.js'
+import User from "../user.js"
 
 let HttpsProxyAgent = ''
 export default class MysApi {
@@ -13,7 +14,7 @@ export default class MysApi {
 	 * @param isSr 是否星铁
 	 * @param option.log 是否显示日志
 	 */
-	constructor(uid, cookie, option = {}, isSr = false) {
+	constructor(uid, cookie, option = {}, isSr = false, device = '') {
 		this.uid = uid
 		this.cookie = cookie
 		this.isSr = isSr
@@ -22,7 +23,7 @@ export default class MysApi {
 		this.apiTool = new apiTool(uid, this.server, isSr)
 		/** 5分钟缓存 */
 		this.cacheCd = 300
-		
+		this._device = device
 		this.option = {
 			log: true,
 			...option
@@ -80,7 +81,23 @@ export default class MysApi {
 		return 'cn_gf01'
 	}
 	
-	async getData(type, data = {}, cached = false) {
+	async getData(type, data = {}, cached = false, isGetFP = false) {
+		if (!isGetFP && !data.device_fp) {
+			let seed_id = this.generateSeed(16)
+			let device_fp = await this.getData('getFp', {
+				seed_id
+			}, false, true)
+			if (!data) {
+				data = {}
+			}
+			if (data?.headers) {
+				data.headers['x-rpc-device_fp'] = device_fp?.data?.device_fp
+			} else {
+				data.headers = {
+					'x-rpc-device_fp': device_fp?.data?.device_fp
+				}
+			}
+		}
 		let {
 			url,
 			headers,
@@ -145,7 +162,7 @@ export default class MysApi {
 			Origin: 'https://webstatic.mihoyo.com',
 			X_Requested_With: 'com.mihoyo.hyperion',
 			Referer: 'https://webstatic.mihoyo.com',
-			x_rpc_device_fp: md5(this.device).substring(0, 12)
+			x_rpc_device_fp: md5(this.device).substring(0, 13)
 		}
 		const os = {
 			app_version: '2.9.0',
@@ -170,7 +187,7 @@ export default class MysApi {
 				'x-rpc-app_version': client.app_version,
 				'User-Agent': `Mozilla/5.0 (Linux; Android 13; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.59.1`,
 				'Content-Type': 'application/json;charset=UTF-8',
-				'x-rpc-device_id': this.option.device_id || this.getGuid(),
+				'x-rpc-device_id': this.option.device_id || new User().getGuid(),
 				'x-rpc-sys_version': '13',
 				Origin: 'https://webstatic.mihoyo.com',
 				'X-Requested-With': 'com.mihoyo.hyperion',
@@ -212,21 +229,13 @@ export default class MysApi {
 		return `${t},${r},${DS}`
 	}
 	
-	getGuid() {
-		function S4() {
-			return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
-		}
-		
-		return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
-	}
-	
 	cacheKey(type, data) {
 		return 'Yz:genshin:mys:cache:' + md5(this.uid + type + JSON.stringify(data))
 	}
 	
 	async cache(res, cacheKey) {
 		if (!res || res.retcode !== 0) return
-		redis.setEx(cacheKey, this.cacheCd, JSON.stringify(res))
+		await redis.setEx(cacheKey, this.cacheCd, JSON.stringify(res))
 	}
 	
 	async getAgent() {
@@ -249,5 +258,13 @@ export default class MysApi {
 		}
 		
 		return null
+	}
+	generateSeed (length = 16) {
+		const characters = '0123456789abcdef'
+		let result = ''
+		for (let i = 0; i < length; i++) {
+			result += characters[Math.floor(Math.random() * characters.length)]
+		}
+		return result
 	}
 }
