@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.1.1](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.1.0...v3.1.1) (2023-10-10)
+
+
+### 修复 BUG
+
+* :fire: 优化及完善米游社公告推送 ([d41ba2c](https://github.com/Lycofuture/Yunzai-Bot/commit/d41ba2c5ad530df2b67a11be05e3fefe5e3d7dd1))
+* :fire: 优化截图,添加多页截图 ([499336f](https://github.com/Lycofuture/Yunzai-Bot/commit/499336fa9f7ebd317f3bcc33f476d89b424e4d65))
+* :fire: 取消puppeteer ([6e8969a](https://github.com/Lycofuture/Yunzai-Bot/commit/6e8969ab1aec76829416c4c1c1799e5ad43782f6))
+* :fire: 添加分页截图 ([b29d9e5](https://github.com/Lycofuture/Yunzai-Bot/commit/b29d9e598003d22e5aaf35cd8bc609e8481d6c8e))
+
 ## [3.1.0](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.0.2...v3.1.0) (2023-10-08)
 
 
