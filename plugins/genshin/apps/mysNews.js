@@ -93,7 +93,7 @@ export class mysNews extends plugin {
   async setPush() {
     if (!this.e.isGroup) {
       await this.reply('推送请在群聊中设置')
-      return
+      return true
     }
     if (!this.e.member?.is_admin && !this.e.isMaster) {
       await this.reply('暂无权限，只有管理员才能操作', true)
@@ -102,8 +102,15 @@ export class mysNews extends plugin {
 
     let cfg = gsCfg.getConfig('mys', 'pushNews')
     let gids = this.gids()
+    const gameMap = {
+      '1': 'bbb',
+      '2': 'gs',
+      '3': 'bb',
+      '4': 'wd',
+      '6': 'sr'
+    };
 
-    let game = gids === 1 ? 'bbb' : gids === 2 ? 'gs' : gids === 3 ? 'bb' : gids === 4 ? 'wd' : gids === 6 ? 'sr' : 'zzz'
+    let game = gameMap[gids] || 'zzz';
     let type = `${game}announceGroup`
     let typeName = '公告'
     if (this.e.msg.includes('资讯')) {
