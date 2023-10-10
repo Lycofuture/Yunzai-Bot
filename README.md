@@ -35,9 +35,11 @@ npm install pnpm -g
 3.安装依赖
 
 ```bash
-git submodule update --init --recursive
+git submodule init
  ```
-
+```bash
+git submodule update --remote
+ ```
 ```bash
 pnpm install -P
 ```
