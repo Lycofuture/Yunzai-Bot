@@ -49,7 +49,7 @@ export default class MysNews extends base {
 
     async render(param) {
         param.multiPage = true
-        return await new base(this.e).Render(this.model, param, 'base64')
+        return await this.Render(this.model, param, 'base64')
     }
 
     async newsDetail(postId, gid) {

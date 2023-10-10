@@ -42,11 +42,11 @@ export default class base {
 	 * @constructor
 	 */
 	async Render(name, data, cfg = 'default') {
-		const e = this.e
-		if (!e.runtime) {
+		if (!this.e.runtime) {
 			console.info('未找到e.runtime，请升级至最新版Yunzai')
+			return false
 		}
-		return e.runtime.render(this.model, name, data, {
+		return this.e.runtime.render(this.model, name, data, {
 			beforeRender({ data }) {
 				return {
 					...data,
