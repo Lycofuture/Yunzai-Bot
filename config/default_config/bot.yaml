@@ -10,7 +10,9 @@ ffmpeg_path:
 ffprobe_path: 
 
 # chromium其他路径
-chromium_path: 
+chromium_path:
+# puppeteer截图超时时间
+puppeteer_timeout:
   
 # 米游社接口代理地址，国际服用
 proxyAddress: 
