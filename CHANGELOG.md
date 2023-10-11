@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.1.1...v3.1.2) (2023-10-10)
+
+
+### 修复 BUG
+
+* :memo: 优化,防止循环爆炸 ([540a2e0](https://github.com/Lycofuture/Yunzai-Bot/commit/540a2e008d6d4ba6ff2699086f8b623b8ea41fca))
+
 ## [3.1.1](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.1.0...v3.1.1) (2023-10-10)
 
 
