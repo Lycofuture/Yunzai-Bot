@@ -9,7 +9,6 @@ let emoticon
 export default class MysNews extends base {
     constructor(e) {
         super(e)
-        this.model = 'mysNews'
     }
 
     async getNews(gid) {
@@ -258,6 +257,10 @@ export default class MysNews extends base {
 
     replyMsg(img, title) {
         if (!img) return false
+        if (img.length === 1) {
+            if (title) return [title, ...img]
+            return img
+        }
         return common.makeForwardMsg(this.e, img, title)
     }
 
@@ -296,15 +299,15 @@ export default class MysNews extends base {
             this.e.isGroup = true
             this.pushGroup = []
             for (let val of news) {
-                if (Number(now - val.post.created_at) > interval)
-                    continue
-                if (cfg.banWord[type] && new RegExp(cfg.banWord[type]).test(val.post.subject))
-                    continue
-                if (val.typeName == '公告')
+                // if (Number(now - val.post.created_at) > interval)
+                //     continue
+                // if (cfg.banWord[type] && new RegExp(cfg.banWord[type]).test(val.post.subject))
+                //     continue
+                if (val.typeName === '公告')
                     for (let botId in cfg[`${type}announceGroup`])
                         for (let groupId of cfg[`${type}announceGroup`][botId])
                             await this.sendNews(botId, groupId, val.typeName, val.post.post_id, gid)
-                if (val.typeName == '资讯')
+                if (val.typeName === '资讯')
                     for (let botId in cfg[`${type}infoGroup`])
                         for (let groupId of cfg[`${type}infoGroup`][botId])
                             await this.sendNews(botId, groupId, val.typeName, val.post.post_id, gid)
