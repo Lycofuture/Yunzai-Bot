@@ -233,7 +233,7 @@ export default class MysNews extends base {
         }
         let postId = ''
         for (let post of res.data.posts) {
-            if (post.user.uid == '218945821') {
+            if (post.user.uid === '218945821') {
                 postId = post.post.post_id
                 break
             }
@@ -267,8 +267,8 @@ export default class MysNews extends base {
     async mysNewsTask() {
         let cfg = gsCfg.getConfig('mys', 'pushNews')
 
-        // 推送2小时内的公告资讯
-        let interval = 7200
+        // 推送5小时内的公告资讯
+        let interval = 18000
         // 最多同时推送两条
         this.maxNum = cfg.maxNum
 
@@ -299,18 +299,15 @@ export default class MysNews extends base {
             this.e.isGroup = true
             this.pushGroup = []
             for (let val of news) {
-                // if (Number(now - val.post.created_at) > interval)
-                //     continue
-                // if (cfg.banWord[type] && new RegExp(cfg.banWord[type]).test(val.post.subject))
-                //     continue
-                if (val.typeName === '公告')
+                if (Number(now - val.post.created_at) > interval)
+                    continue
+                if (cfg.banWord[type] && new RegExp(cfg.banWord[type]).test(val.post.subject))
+                    continue
+                if (['公告','资讯'].includes(val.typeName)) {
                     for (let botId in cfg[`${type}announceGroup`])
                         for (let groupId of cfg[`${type}announceGroup`][botId])
                             await this.sendNews(botId, groupId, val.typeName, val.post.post_id, gid)
-                if (val.typeName === '资讯')
-                    for (let botId in cfg[`${type}infoGroup`])
-                        for (let groupId of cfg[`${type}infoGroup`][botId])
-                            await this.sendNews(botId, groupId, val.typeName, val.post.post_id, gid)
+                }
             }
         }
     }
@@ -324,7 +321,9 @@ export default class MysNews extends base {
 
         let game = this.game(gid)
         // 判断是否存在群关系
+        this.e.bot = Bot[botId] || Bot
         this.e.group = Bot[botId]?.pickGroup(groupId)
+        this.e.group_id = Number(groupId)
         if (!this.e.group) {
             logger.mark(`[米游社${game}${typeName}推送] 群${botId}:${groupId}未关联`)
             return
