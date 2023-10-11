@@ -9,6 +9,7 @@ let emoticon
 export default class MysNews extends base {
     constructor(e) {
         super(e)
+        this.model = 'mysNews'
     }
 
     async getNews(gid) {
