@@ -100,7 +100,6 @@ export default class RoleIndex extends base {
 
     roleExploreData(res) {
         let [resIndex, basicInfo] = res
-        console.log(this.e.uid)
         return {
             role: resIndex.data.role,
             uid: this.e.uid,
