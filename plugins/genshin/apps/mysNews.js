@@ -36,7 +36,7 @@ export class mysNews extends plugin {
         },
         {
           reg: '^#(星铁|原神|崩坏三|崩三|绝区零|崩坏二|崩二|崩坏学园二|未定|未定事件簿)?推送(公告|资讯)$',
-          // permission: 'master',
+          permission: 'master',
           fnc: 'mysNewsTask'
         }
       ]
