@@ -261,7 +261,7 @@ export default class MysNews extends base {
             if (title) return [title, ...img]
             return img
         }
-        return common.makeForwardMsg(this.e, img, title)
+        return common.makeForwardMsg(this.e, [title, ...img], title)
     }
 
     async mysNewsTask() {
@@ -303,7 +303,7 @@ export default class MysNews extends base {
                     continue
                 if (cfg.banWord[type] && new RegExp(cfg.banWord[type]).test(val.post.subject))
                     continue
-                if (['公告','资讯'].includes(val.typeName)) {
+                if (['公告', '资讯'].includes(val.typeName)) {
                     for (let botId in cfg[`${type}announceGroup`])
                         for (let groupId of cfg[`${type}announceGroup`][botId])
                             await this.sendNews(botId, groupId, val.typeName, val.post.post_id, gid)

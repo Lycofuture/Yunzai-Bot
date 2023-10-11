@@ -2,7 +2,7 @@
 pushTime: 0 0/5 * * * ?
 
 # 最多同时推送条数
-maxNum: 1
+maxNum: 2
 
 # 包含关键字不推送
 banWord:
