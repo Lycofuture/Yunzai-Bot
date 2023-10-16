@@ -64,6 +64,6 @@ export class calculator extends plugin {
     if (!data) return
 
     /** 生成图片 */
-    await new base(this.e).Render('Calculator', data)
+    await new base(this.e).Render('calculator', data)
   }
 }
