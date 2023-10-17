@@ -697,7 +697,7 @@ export class add extends plugin {
     }
 
     let count = arr.length
-    arr = arr.reverse()
+    //arr = arr.reverse()
 
     if (type == 'list') {
       arr = this.pagination(page, pageSize, arr)
@@ -718,7 +718,7 @@ export class add extends plugin {
         // keyWord.push('\n')
         keyWord.push(v => msg.push(v))
       } else if (keyWord.type) {
-        msg.push(`\n${num + 1}、`, keyWord)
+        msg.push(`${num + 1}、`, keyWord)
       } else {
         msg.push(`${num + 1}、`, keyWord)
       }
