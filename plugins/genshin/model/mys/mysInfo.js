@@ -217,7 +217,7 @@ export default class MysInfo {
             }
 
             for (let i in res) {
-                res[i] = await mysInfo.checkCode(res[i], res[i].api)
+                res[i] = await mysInfo.checkCode(res[i], res[i].api, mysApi, api[res[i].api])
                 mysInfo.gtest = true
                 if (res[i]?.retcode === 0) continue
 
