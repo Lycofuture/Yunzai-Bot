@@ -342,11 +342,14 @@ export default class MysNews extends base {
         }
 
         this.pushGroup[groupId]++
-        await redis.set(`${this.key}${botId}:${groupId}:${postId}`, '1', {EX: 3600 * 10})
         // 随机延迟10-90秒
         await common.sleep(lodash.random(10000, 90000))
         const msg = await this.replyMsg(this[postId].img, `${game}${typeName}推送：${this[postId].title}`)
-        return this.e.group.sendMsg(msg)
+        const runMsg = this.e.group.sendMsg(msg)
+        if(runMsg){
+            await redis.set(`${this.key}${botId}:${groupId}:${postId}`, '1', {EX: 3600 * 10})
+        }
+        return runMsg
     }
 
     game(gid) {
