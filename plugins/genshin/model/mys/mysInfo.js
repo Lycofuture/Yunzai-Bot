@@ -28,6 +28,7 @@ export default class MysInfo {
         this.ckUser = null
         // this.auth = [ 'dailyNote', 'bbs_sign_info', 'bbs_sign_home', 'bbs_sign', 'ys_ledger', 'compute', 'avatarSkill', 'detail', 'blueprint' ]
         this.auth = ['dailyNote', 'bbs_sign_info', 'bbs_sign_home', 'bbs_sign', 'ys_ledger', 'compute', 'avatarSkill', 'detail', 'blueprint', 'UserGame', 'deckList', 'avatar_cardList', 'action_cardList', 'avatarInfo']
+
         this.gtest = false
     }
 
@@ -69,10 +70,8 @@ export default class MysInfo {
 
         /** 判断回复 */
         await mysInfo.checkReply()
-
         return mysInfo
     }
-
     static async getNoteUser(e) {
         await MysInfo.initCache()
         let user = await NoteUser.create(e)
@@ -83,7 +82,6 @@ export default class MysInfo {
         }
         return false
     }
-
     /**
      * 获取UID
      * @param e
@@ -219,13 +217,14 @@ export default class MysInfo {
             for (let i in res) {
                 res[i] = await mysInfo.checkCode(res[i], res[i].api, mysApi, api[res[i].api])
                 mysInfo.gtest = true
+
                 if (res[i]?.retcode === 0) continue
 
                 break
             }
         } else {
             res = await mysApi.getData(api, data)
-            res = await mysInfo.checkCode(res, api)
+            res = await mysInfo.checkCode(res, api, mysApi, data)
         }
 
         return res
@@ -263,7 +262,7 @@ export default class MysInfo {
         // 初始化用户缓存
         let userCount = 0
         await NoteUser.forEach(await async function (user) {
-            userCount += await user.initCache(true)
+            userCount = await user.initCache()
         })
         logger.mark(`加载用户UID：${userCount}个，加入查询池`)
     }
@@ -351,7 +350,7 @@ export default class MysInfo {
     /**
      * 获取请求所需CK
      * @param onlySelfCk 是否只获取uid自己对应的ck。为true则只获取uid对应ck，若无则返回为空
-     * @returns {Promise<string|string|*>} 查询ck，获取失败则返回空
+     * @returns {Promise<string|*>} 查询ck，获取失败则返回空
      */
     async getCookie(onlySelfCk = false) {
         if (this.ckInfo.ck) return this.ckInfo.ck
@@ -407,7 +406,7 @@ export default class MysInfo {
                 }
                 break
             case 1008:
-                if (!isTask)this.e.reply('\n请先去米游社绑定角色', false, {at: this.userId})
+                if (!isTask) this.e.reply('\n请先去米游社绑定角色', false, {at: this.userId})
                 break
             case 10101:
                 if (!isTask) {
@@ -426,15 +425,15 @@ export default class MysInfo {
             case -1002:
                 if (res.api === 'detail') res.retcode = 0
                 break
+            case 5003:
             case 1034:
                 let handler = this.e.runtime?.handler || {}
 
                 // 如果有注册的mys.req.err，调用
                 if (handler.has('mys.req.err')) {
                     logger.mark(`[米游社查询][uid:${this.uid}][qq:${this.userId}] 遇到验证码，尝试调用 Handler mys.req.err`)
-                    res = await handler.call('mys.req.err', this.e, { mysApi, type, res, data, mysInfo: this }) || res
+                    res = await handler.call('mys.req.err', this.e, {mysApi, type, res, data, mysInfo: this}) || res
                 }
-
 
                 if (!res || res?.retcode === 1034) {
                     logger.mark(`[米游社查询失败][uid:${this.uid}][qq:${this.userId}] 遇到验证码`)
@@ -442,14 +441,14 @@ export default class MysInfo {
                 }
                 break
             default:
-                if (!isTask)this.e.reply(`米游社接口报错，暂时无法查询：${res.message || 'error'}`)
+                if (!isTask) this.e.reply(`米游社接口报错，暂时无法查询：${res.message || 'error'}`)
                 break
         }
         if (res.retcode !== 0) {
             logger.mark(`[mys接口报错]${JSON.stringify(res)}，uid：${this.uid}`)
         }
         // 添加请求记录
-        await this.ckUser.addQueryUid(this.uid)
+        if (!isTask) await this.ckUser.addQueryUid(this.uid)
         return res
     }
 
