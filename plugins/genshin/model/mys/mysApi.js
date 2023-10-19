@@ -11,6 +11,7 @@ export default class MysApi {
      * @param uid 游戏uid
      * @param cookie 米游社cookie
      * @param option 其他参数
+     * @param option.log 是否显示日志
      * @param isSr 是否星铁
      * @param device 设备device_id
      * @param option.log 是否显示日志
@@ -23,6 +24,7 @@ export default class MysApi {
         this.apiTool = new apiTool(uid, this.server, isSr)
         /** 5分钟缓存 */
         this.cacheCd = 300
+
         this._device = device
         this.option = {
             log: true,
@@ -30,18 +32,16 @@ export default class MysApi {
         }
     }
 
+    /* eslint-disable quotes */
     get device() {
         if (!this._device) this._device = `Yz-${md5(this.uid).substring(0, 5)}`
         return this._device
     }
 
     getUrl(type, data = {}) {
-        let urlMap = this.apiTool.getUrlMap({
-            ...data,
-            deviceId: this.device
-        })
-
+        let urlMap = this.apiTool.getUrlMap({...data, deviceId: this.device})
         if (!urlMap[type]) return false
+
         let {url, query = '', body = ''} = urlMap[type]
 
         if (query) url += `?${query}`
@@ -75,6 +75,7 @@ export default class MysApi {
     async getData(type, data = {}, cached = false) {
         if (type === 'getFp') data = {seed_id: this.generateSeed(16)}
         let {url, headers, body} = this.getUrl(type, data)
+
         if (!url) return false
 
         let cacheKey = this.cacheKey(type, data)
@@ -106,6 +107,7 @@ export default class MysApi {
             logger.error(error.toString())
             return false
         }
+
         if (!response.ok) {
             logger.error(`[米游社接口][${type}][${this.uid}] ${response.status} ${response.statusText}`)
             return false
@@ -114,15 +116,14 @@ export default class MysApi {
             logger.mark(`[米游社接口][${type}][${this.uid}] ${Date.now() - start}ms`)
         }
         const res = await response.json()
+
         if (!res) {
             logger.mark('mys接口没有返回')
             return false
         }
-
         if (res.retcode !== 0 && this.option.log) {
             logger.debug(`[米游社接口][请求参数] ${url} ${JSON.stringify(param)}`)
         }
-
         res.api = type
 
         if (cached) await this.cache(res, cacheKey)
@@ -130,15 +131,14 @@ export default class MysApi {
         return res
     }
 
-    getHeaders(query = '', body = '', sign = false) {
+    getHeaders(query = '', body = '') {
         const cn = {
             app_version: '2.59.1',
             User_Agent: `Mozilla/5.0 (Linux; Android 13; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.59.1`,
             client_type: '5',
             Origin: 'https://webstatic.mihoyo.com',
             X_Requested_With: 'com.mihoyo.hyperion',
-            Referer: 'https://webstatic.mihoyo.com',
-            x_rpc_device_fp: md5(this.device).substring(0, 13)
+            Referer: 'https://webstatic.mihoyo.com'
         }
         const os = {
             app_version: '2.9.0',
@@ -146,8 +146,7 @@ export default class MysApi {
             client_type: '2',
             Origin: 'https://webstatic-sea.hoyolab.com',
             X_Requested_With: 'com.mihoyo.hoyolab',
-            Referer: 'https://webstatic-sea.hoyolab.com',
-            x_rpc_device_fp: md5(this.device).substring(0, 13)
+            Referer: 'https://webstatic-sea.hoyolab.com'
         }
         let client
         if (this.server.startsWith('os')) {
@@ -155,27 +154,9 @@ export default class MysApi {
         } else {
             client = cn
         }
-        if (sign) {
-            return {
-                'x-rpc-device_fp': client.x_rpc_device_fp,
-                'x-rpc-client_type': client.client_type,
-                DS: this.getDsSign(),
-                'x-rpc-app_version': client.app_version,
-                'User-Agent': `Mozilla/5.0 (Linux; Android 13; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.59.1`,
-                'Content-Type': 'application/json;charset=UTF-8',
-                'x-rpc-device_id': this.option.device_id || new User().getGuid(),
-                'x-rpc-sys_version': '13',
-                Origin: 'https://webstatic.mihoyo.com',
-                'X-Requested-With': 'com.mihoyo.hyperion',
-                Referer: 'https://webstatic.mihoyo.com/'
-            }
-        }
         return {
             'x-rpc-app_version': client.app_version,
             'x-rpc-client_type': client.client_type,
-            'x-rpc-device_fp': client.x_rpc_device_fp,
-            'X-Requested-With': client.X_Requested_With,
-            Accept: 'application/json, text/plain, */*',
             'User-Agent': client.User_Agent,
             Referer: client.Referer,
             DS: this.getDs(query, body)
@@ -211,7 +192,7 @@ export default class MysApi {
 
     async cache(res, cacheKey) {
         if (!res || res.retcode !== 0) return
-        await redis.setEx(cacheKey, this.cacheCd, JSON.stringify(res))
+        redis.setEx(cacheKey, this.cacheCd, JSON.stringify(res))
     }
 
     async getAgent() {
@@ -226,7 +207,7 @@ export default class MysApi {
                 logger.error(err)
             })
 
-            HttpsProxyAgent = HttpsProxyAgent ? HttpsProxyAgent.default : undefined
+            HttpsProxyAgent = HttpsProxyAgent ? HttpsProxyAgent.HttpsProxyAgent : undefined
         }
 
         if (HttpsProxyAgent) {

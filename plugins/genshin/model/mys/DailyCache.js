@@ -27,7 +27,7 @@ export default class DailyCache extends BaseModel {
    * * 传入servKey (mys/hoyolab)，会返回指定的servCache
    * @returns {DailyCache}
    */
-  static create (uid) {
+  static create (uid='') {
     return new DailyCache(uid)
   }
 
