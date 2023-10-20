@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.1.3](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.1.2...v3.1.3) (2023-10-19)
+
+
+### 修复 BUG
+
+* :fire: 外置插件解决,增加handler调用的支持 ([19b1fc6](https://github.com/Lycofuture/Yunzai-Bot/commit/19b1fc6acb3efa979884e8b1460bb70bd69e9f86))
+* :sparkles: . ([7f9b67d](https://github.com/Lycofuture/Yunzai-Bot/commit/7f9b67dfee8f987a5e7367592a2fc8fc63ba82bc))
+* :sparkles: Handler调用时保留this ([51e4c7e](https://github.com/Lycofuture/Yunzai-Bot/commit/51e4c7eadda88cb0494c475dfbd232e006d0dfe1))
+* :sparkles: 保留this ([f6e8550](https://github.com/Lycofuture/Yunzai-Bot/commit/f6e8550299710492fdb3830f63639b0525e8038c))
+* :sparkles: 保留this ([236decf](https://github.com/Lycofuture/Yunzai-Bot/commit/236decfa2c59e040ab2561e645a0d1600e290fae))
+
 ## [3.1.2](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.1.1...v3.1.2) (2023-10-10)
 
 
