@@ -154,9 +154,25 @@ export default class MysApi {
         } else {
             client = cn
         }
+        if (sign) {
+            return {
+                'x-rpc-client_type': client.client_type,
+                DS: this.getDsSign(),
+                'x-rpc-app_version': client.app_version,
+                'User-Agent': client.User_Agent,
+                'Content-Type': 'application/json;charset=UTF-8',
+                'x-rpc-device_id': this.option.device_id || new User().getGuid(),
+                'x-rpc-sys_version': '13',
+                Origin: 'https://webstatic.mihoyo.com',
+                'X-Requested-With': 'com.mihoyo.hyperion',
+                Referer: 'https://webstatic.mihoyo.com/'
+            }
+        }
         return {
             'x-rpc-app_version': client.app_version,
             'x-rpc-client_type': client.client_type,
+            'X-Requested-With': client.X_Requested_With,
+            Accept: 'application/json, text/plain, */*',
             'User-Agent': client.User_Agent,
             Referer: client.Referer,
             DS: this.getDs(query, body)
