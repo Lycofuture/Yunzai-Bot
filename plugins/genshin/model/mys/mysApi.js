@@ -42,12 +42,12 @@ export default class MysApi {
         let urlMap = this.apiTool.getUrlMap({...data, deviceId: this.device})
         if (!urlMap[type]) return false
 
-        let {url, query = '', body = ''} = urlMap[type]
+        let {url, query = '', body = '', sign = ''} = urlMap[type]
 
         if (query) url += `?${query}`
         if (body) body = JSON.stringify(body)
 
-        let headers = this.getHeaders(query, body)
+        let headers = this.getHeaders(query, body, sign)
 
         return {url, headers, body}
     }
@@ -131,7 +131,7 @@ export default class MysApi {
         return res
     }
 
-    getHeaders(query = '', body = '') {
+    getHeaders(query = '', body = '', sign = false) {
         const cn = {
             app_version: '2.59.1',
             User_Agent: `Mozilla/5.0 (Linux; Android 13; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.59.1`,
