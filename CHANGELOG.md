@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.4](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.1.3...v3.1.4) (2023-10-25)
+
+
+### 修复 BUG
+
+* 优化fp ([bdf5609](https://github.com/Lycofuture/Yunzai-Bot/commit/bdf5609c9a3456eff787104944da83735e78fe7c))
+* 优化fp ([c1b9eb6](https://github.com/Lycofuture/Yunzai-Bot/commit/c1b9eb6ada5df5c1cc782ebf0f918c9501cd8c9e))
+
 ## [3.1.3](https://github.com/Lycofuture/Yunzai-Bot/compare/v3.1.2...v3.1.3) (2023-10-19)
 
 
